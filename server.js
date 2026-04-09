@@ -33,7 +33,7 @@ app.get('/api/kpis', async (req, res) => {
   try {
     const jwt = await getJWT();
     const { date, per_week } = req.query;
-    const url = new URL(`${AUTH_BASE}/public/v1/kpis`);
+    const url = new URL(`https://api.skello.io/public/v1/kpis`);
     if (date) url.searchParams.set('date', date);
     if (per_week !== undefined) url.searchParams.set('per_week', per_week);
     const r = await fetch(url.toString(), {

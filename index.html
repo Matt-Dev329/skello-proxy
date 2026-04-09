@@ -3,368 +3,363 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KPI RH — Multi-parcs NIKITO</title>
+<title>KPI RH — NIKITO Multi-parcs</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #f5f5f3;
-    --surface: #ffffff;
-    --surface2: #f1efe8;
-    --border: rgba(0,0,0,0.1);
-    --text: #1a1a18;
-    --text2: #5f5e5a;
-    --text3: #888780;
-    --blue: #378add; --blue-bg: #e6f1fb; --blue-text: #0c447c;
-    --green: #639922; --green-bg: #eaf3de; --green-text: #27500a;
-    --amber: #ba7517; --amber-bg: #faeeda; --amber-text: #412402;
-    --red: #e24b4a; --red-bg: #fcebeb; --red-text: #791f1f;
-    --purple: #7f77dd; --purple-bg: #eeedfe; --purple-text: #3c3489;
-    --teal: #1d9e75; --teal-bg: #e1f5ee; --teal-text: #085041;
-    --radius: 8px; --radius-lg: 12px;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1c1c1a; --surface: #2a2a28; --surface2: #222220;
-      --border: rgba(255,255,255,0.1); --text: #f0ede8; --text2: #b4b2a9; --text3: #888780;
-      --blue-bg: #0c2a45; --blue-text: #85b7eb;
-      --green-bg: #173404; --green-text: #c0dd97;
-      --amber-bg: #2c1a05; --amber-text: #fac775;
-      --red-bg: #2e1212; --red-text: #f7c1c1;
-      --purple-bg: #1e1b40; --purple-text: #cbc9f4;
-      --teal-bg: #052820; --teal-text: #9fe1cb;
-    }
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --nikito-purple: #6B21E8;
+  --nikito-purple-light: #9B59F5;
+  --nikito-purple-dark: #3D0A8C;
+  --nikito-neon: #C084FC;
+  --nikito-blue: #38BDF8;
+  --nikito-pink: #F472B6;
+  --nikito-orange: #FB923C;
+  --bg: #0D0B1A;
+  --surface: #160F2E;
+  --surface2: #1E1540;
+  --surface3: #261B52;
+  --border: rgba(107,33,232,0.3);
+  --border2: rgba(107,33,232,0.6);
+  --text: #F0EAFF;
+  --text2: #A78BCA;
+  --text3: #6B5A8A;
+  --radius: 10px;
+  --radius-lg: 16px;
+}
 
-  body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; font-size: 14px; line-height: 1.5; }
+body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; font-size: 14px; line-height: 1.5; min-height: 100vh; }
 
-  .app { max-width: 1400px; margin: 0 auto; padding: 24px 20px; }
+/* Stars background */
+body::before {
+  content: '';
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(1px 1px at 20% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 25%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 60%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 10% 90%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 50%, rgba(255,255,255,0.25) 0%, transparent 100%);
+  pointer-events: none; z-index: 0;
+}
 
-  /* Header */
-  .page-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
-  .page-title { font-size: 22px; font-weight: 600; }
-  .page-sub { font-size: 13px; color: var(--text2); margin-top: 4px; }
-  .header-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.app { max-width: 1400px; margin: 0 auto; padding: 24px 20px; position: relative; z-index: 1; }
 
-  /* Controls */
-  .controls-bar { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 20px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin-bottom: 24px; }
-  .ctrl-group { display: flex; flex-direction: column; gap: 4px; }
-  .ctrl-group label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.04em; }
-  .ctrl-group select { font-size: 13px; background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 6px 10px; color: var(--text); min-width: 180px; cursor: pointer; }
-  .ctrl-group select:focus { outline: 2px solid var(--blue); }
+/* Header */
+.page-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
+.logo-area { display: flex; align-items: center; gap: 14px; }
+.nikito-logo { width: 48px; height: 48px; background: linear-gradient(135deg, var(--nikito-purple), var(--nikito-purple-light)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; color: white; letter-spacing: -1px; box-shadow: 0 0 20px rgba(107,33,232,0.5); }
+.page-title { font-size: 24px; font-weight: 700; color: var(--text); }
+.page-sub { font-size: 13px; color: var(--text2); margin-top: 3px; }
+.header-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 
-  /* Badges */
-  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: var(--radius); font-size: 12px; font-weight: 500; }
-  .badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-  .badge-ok { background: var(--green-bg); color: var(--green-text); }
-  .badge-warn { background: var(--amber-bg); color: var(--amber-text); }
-  .badge-err { background: var(--red-bg); color: var(--red-text); }
-  .badge-neutral { background: var(--surface2); color: var(--text2); }
+/* Badges */
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.badge-ok { background: rgba(56,189,248,0.15); color: var(--nikito-blue); border: 1px solid rgba(56,189,248,0.3); }
+.badge-warn { background: rgba(251,146,60,0.15); color: var(--nikito-orange); border: 1px solid rgba(251,146,60,0.3); }
+.badge-demo { background: rgba(155,89,245,0.15); color: var(--nikito-neon); border: 1px solid rgba(155,89,245,0.3); }
 
-  /* Button */
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: var(--radius); border: 0.5px solid var(--border); background: var(--surface); color: var(--text); font-size: 13px; cursor: pointer; transition: background 0.15s; }
-  .btn:hover { background: var(--surface2); }
-  .btn:active { transform: scale(0.98); }
-  .btn-primary { background: var(--blue); color: #fff; border-color: var(--blue); }
-  .btn-primary:hover { background: #2a7acc; }
+/* Button */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius); border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-size: 13px; cursor: pointer; transition: all 0.2s; }
+.btn:hover { background: var(--surface3); border-color: var(--nikito-purple-light); }
+.btn-primary { background: linear-gradient(135deg, var(--nikito-purple), var(--nikito-purple-light)); border-color: transparent; color: white; }
+.btn-primary:hover { opacity: 0.9; }
 
-  /* Alerts */
-  .alert { border-radius: var(--radius); padding: 12px 16px; font-size: 13px; margin-bottom: 20px; border: 0.5px solid var(--border); }
-  .alert-info { background: var(--blue-bg); color: var(--blue-text); }
-  .alert-warn { background: var(--amber-bg); color: var(--amber-text); }
-  .alert-err { background: var(--red-bg); color: var(--red-text); }
+/* Controls */
+.controls-bar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px 20px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin-bottom: 24px; }
+.ctrl-group { display: flex; flex-direction: column; gap: 5px; }
+.ctrl-group label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+.ctrl-group select { font-size: 13px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 7px 12px; color: var(--text); min-width: 180px; cursor: pointer; }
+.ctrl-group select:focus { outline: none; border-color: var(--nikito-purple); }
 
-  /* KPI Cards */
-  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
-  .kpi-card { background: var(--surface2); border-radius: var(--radius); padding: 14px 16px; }
-  .kpi-card .label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
-  .kpi-card .value { font-size: 26px; font-weight: 600; line-height: 1; }
-  .kpi-card .sub { font-size: 12px; color: var(--text2); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
-  .delta { font-size: 12px; font-weight: 600; padding: 1px 6px; border-radius: 4px; }
-  .delta-neg { background: var(--red-bg); color: var(--red-text); }
-  .delta-pos { background: var(--green-bg); color: var(--green-text); }
-  .delta-neutral { background: var(--surface2); color: var(--text2); }
+/* Demo banner */
+.demo-banner { background: linear-gradient(135deg, rgba(107,33,232,0.15), rgba(155,89,245,0.1)); border: 1px solid var(--border2); border-radius: var(--radius-lg); padding: 14px 18px; margin-bottom: 20px; font-size: 13px; color: var(--nikito-neon); }
 
-  /* Cards */
-  .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
-  .card h3 { font-size: 14px; font-weight: 600; margin-bottom: 16px; }
+/* KPI Cards */
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; position: relative; overflow: hidden; }
+.kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--nikito-purple), var(--nikito-purple-light)); }
+.kpi-card .label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+.kpi-card .value { font-size: 28px; font-weight: 700; line-height: 1; color: var(--text); }
+.kpi-card .sub { font-size: 12px; color: var(--text2); margin-top: 6px; }
+.delta { font-size: 12px; font-weight: 600; padding: 2px 7px; border-radius: 6px; }
+.delta-neg { background: rgba(244,114,182,0.15); color: var(--nikito-pink); }
+.delta-pos { background: rgba(56,189,248,0.15); color: var(--nikito-blue); }
 
-  /* Grid layouts */
-  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px; }
-  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; margin-bottom: 20px; }
+/* Cards */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
+.card h3 { font-size: 14px; font-weight: 600; margin-bottom: 16px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.card h3::before { content: ''; width: 3px; height: 16px; background: linear-gradient(var(--nikito-purple), var(--nikito-neon)); border-radius: 2px; }
 
-  /* Parite bars */
-  .parite-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 13px; }
-  .parite-name { width: 120px; color: var(--text2); flex-shrink: 0; font-size: 12px; }
-  .parite-track { flex: 1; background: var(--surface2); border-radius: 4px; height: 20px; overflow: hidden; }
-  .parite-fill { height: 20px; border-radius: 4px; transition: width 0.6s ease; }
-  .parite-count { width: 24px; text-align: right; font-weight: 600; font-size: 13px; }
+/* Grid */
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; margin-bottom: 20px; }
 
-  /* Absence list */
-  .abs-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 0.5px solid var(--border); }
-  .abs-item:last-child { border-bottom: none; }
-  .abs-name { font-size: 13px; }
-  .abs-pill { padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+/* Parcs tabs */
+.parcs-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.parc-tab { padding: 8px 18px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text2); font-size: 13px; cursor: pointer; transition: all 0.2s; }
+.parc-tab:hover { border-color: var(--nikito-purple); color: var(--text); }
+.parc-tab.active { background: linear-gradient(135deg, var(--nikito-purple), var(--nikito-purple-light)); border-color: transparent; color: white; font-weight: 600; }
 
-  /* Turnover */
-  .turnover-center { text-align: center; padding: 16px 0 8px; }
-  .turnover-num { font-size: 52px; font-weight: 700; line-height: 1; }
-  .turnover-sub { font-size: 12px; color: var(--text2); margin-top: 6px; }
-  .mvt-row { display: flex; justify-content: space-around; margin-top: 16px; padding-top: 16px; border-top: 0.5px solid var(--border); }
-  .mvt-col { text-align: center; }
-  .mvt-num { font-size: 22px; font-weight: 700; }
-  .mvt-lbl { font-size: 11px; color: var(--text2); margin-top: 3px; }
+/* Parite bars */
+.parite-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 13px; }
+.parite-name { width: 120px; color: var(--text2); flex-shrink: 0; font-size: 12px; }
+.parite-track { flex: 1; background: var(--surface3); border-radius: 4px; height: 20px; overflow: hidden; }
+.parite-fill { height: 20px; border-radius: 4px; transition: width 0.6s ease; }
+.parite-count { width: 24px; text-align: right; font-weight: 600; font-size: 13px; color: var(--text); }
 
-  /* Mouvement detail */
-  .mvt-detail { margin-top: 12px; }
-  .mvt-row-detail { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
-  .mvt-row-detail:last-child { border-bottom: none; }
-  .mvt-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+/* Absence */
+.abs-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.abs-item:last-child { border-bottom: none; }
+.abs-pill { padding: 3px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; }
 
-  /* Table */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; padding: 10px 12px; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text2); border-bottom: 0.5px solid var(--border); background: var(--surface2); white-space: nowrap; }
-  td { padding: 11px 12px; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: var(--surface2); cursor: pointer; }
+/* Turnover */
+.turnover-center { text-align: center; padding: 16px 0 8px; }
+.turnover-num { font-size: 56px; font-weight: 800; background: linear-gradient(135deg, var(--nikito-purple-light), var(--nikito-neon)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.mvt-row { display: flex; justify-content: space-around; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+.mvt-col { text-align: center; }
+.mvt-num { font-size: 24px; font-weight: 700; }
+.mvt-lbl { font-size: 11px; color: var(--text2); margin-top: 3px; }
+.mvt-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+.mvt-detail { margin-top: 12px; }
+.mvt-row-detail { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text2); }
+.mvt-row-detail:last-child { border-bottom: none; }
 
-  /* Loading */
-  .loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px; gap: 16px; }
-  .spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* Table */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; padding: 10px 14px; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); border-bottom: 1px solid var(--border); background: var(--surface2); }
+td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface2); cursor: pointer; }
 
-  /* Demo banner */
-  .demo-banner { background: var(--amber-bg); color: var(--amber-text); border: 0.5px solid var(--amber); border-radius: var(--radius-lg); padding: 14px 18px; margin-bottom: 20px; font-size: 13px; }
-  .demo-banner strong { font-weight: 600; }
+/* Parc name badge */
+.parc-badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.parc-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
-  /* Responsive */
-  @media (max-width: 600px) {
-    .kpi-row { grid-template-columns: repeat(2, 1fr); }
-    .page-title { font-size: 18px; }
-  }
+/* Loading */
+.loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px; gap: 16px; }
+.spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--nikito-purple); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .page-title { font-size: 20px; }
+}
 </style>
 </head>
 <body>
 <div class="app">
 
   <header class="page-header">
-    <div>
-      <h1 class="page-title">KPI RH — Multi-parcs NIKITO</h1>
-      <p class="page-sub">Tableau de bord connecté Skello · <span id="last-update">—</span></p>
+    <div class="logo-area">
+      <div class="nikito-logo">N</div>
+      <div>
+        <h1 class="page-title">KPI RH — NIKITO</h1>
+        <p class="page-sub">Tableau de bord multi-parcs · <span id="last-update">—</span></p>
+      </div>
     </div>
     <div class="header-right">
-      <span id="api-badge" class="badge badge-neutral">Connexion...</span>
+      <span id="api-badge" class="badge badge-demo">Mode démo</span>
       <button class="btn btn-primary" onclick="loadAll()">↻ Actualiser</button>
     </div>
   </header>
 
   <div class="controls-bar">
     <div class="ctrl-group">
-      <label>Établissement</label>
-      <select id="org-select" onchange="onOrgChange()">
+      <label>Parc</label>
+      <select id="parc-select" onchange="onParcChange()">
         <option value="all">Tous les parcs</option>
+        <option value="franconville">Franconville (95)</option>
+        <option value="rosny">Rosny-sous-Bois (93)</option>
+        <option value="alfortville">Alfortville (94)</option>
+        <option value="sainte-genevieve">Sainte-Geneviève (91)</option>
       </select>
     </div>
     <div class="ctrl-group">
       <label>Période</label>
       <select id="period-select" onchange="onPeriodChange()">
-        <option value="current_month">Mois en cours (Avril 2026)</option>
+        <option value="current_month">Avril 2026</option>
         <option value="last_month" selected>Mars 2026</option>
         <option value="last_3_months">3 derniers mois</option>
         <option value="ytd">Année en cours</option>
       </select>
     </div>
     <div class="ctrl-group" style="margin-left:auto">
-      <label>Proxy</label>
-      <select id="proxy-url-select" onchange="onProxyChange()">
-        <option value="http://localhost:3001">localhost:3001 (dev)</option>
-<option value="https://skello-proxy.onrender.com">Render (production)</option>
-       <option value="custom">URL personnalisée...</option>
+      <label>Proxy API</label>
+      <select id="proxy-select" onchange="onProxyChange()">
+        <option value="demo">Mode démo</option>
+        <option value="https://skello-proxy.onrender.com">Render (production)</option>
       </select>
     </div>
   </div>
 
-  <div id="demo-banner" class="demo-banner" style="display:none">
-    <strong>Mode démo</strong> — Le proxy backend n'est pas joignable. Les données affichées reproduisent le KPI RH NIKITO Franconville (Mars 2026).
-    Lancez le proxy avec <code>npm start</code> dans le dossier <code>skello-proxy/</code> pour activer les données live.
+  <div id="demo-banner" class="demo-banner">
+    🚀 <strong>Mode démo</strong> — Données de référence NIKITO Mars 2026. Connectez l'API Skello pour les données live.
   </div>
 
   <div id="main-content">
-    <div class="loading-screen">
-      <div class="spinner"></div>
-      <p style="color:var(--text2)">Connexion au proxy Skello...</p>
-    </div>
+    <div class="loading-screen"><div class="spinner"></div><p style="color:var(--text2)">Chargement...</p></div>
   </div>
 
 </div>
 
 <script>
-// ─── Config ───────────────────────────────────────────────────────────────────
-let PROXY = 'http://localhost:3001';
-let activeOrg = 'all';
-let activePeriod = 'last_month';
-let isDemo = false;
-
-function getPeriodDates(p) {
-  const now = new Date();
-  const y = now.getFullYear(), m = now.getMonth();
-  let s, e;
-  if (p === 'current_month') { s = new Date(y, m, 1); e = now; }
-  else if (p === 'last_month') { s = new Date(y, m-1, 1); e = new Date(y, m, 0); }
-  else if (p === 'last_3_months') { s = new Date(y, m-3, 1); e = now; }
-  else { s = new Date(y, 0, 1); e = now; }
-  return {
-    start: s.toISOString().split('T')[0],
-    end: e.toISOString().split('T')[0],
-    label: s.toLocaleDateString('fr-FR', {month:'long', year:'numeric'})
-  };
-}
-
-// ─── API calls ────────────────────────────────────────────────────────────────
-async function apiFetch(path) {
-  const r = await fetch(PROXY + path);
-  if (!r.ok) throw new Error('HTTP ' + r.status);
-  return r.json();
-}
-
-// ─── Fallback (demo data) ─────────────────────────────────────────────────────
-function demoData() {
-  return {
-    organisations: [{ id: '1', name: 'NIKITO Franconville' }],
-    employees: [
-      ...Array.from({length:15}, (_,i) => ({id:i+1, gender:'female', contract_type:'CDI', role:'Agent polyvalent', organisation_id:'1', is_cadre:false})),
-      ...Array.from({length:7}, (_,i) => ({id:i+16, gender:'male', contract_type:'CDI', role:'Agent polyvalent', organisation_id:'1', is_cadre:false})),
-      {id:23, gender:'female', contract_type:'CDI', role:'Directeur', organisation_id:'1', is_cadre:true},
-      {id:24, gender:'male', contract_type:'CDI', role:'Directeur adjoint', organisation_id:'1', is_cadre:true},
-    ],
+// ─── Données démo par parc ────────────────────────────────────────────────────
+const PARCS = {
+  franconville: {
+    name: 'Franconville', dept: '95', color: '#9B59F5',
+    effectif: 24, masse: 29041.56, masse_prev: 31593.03, cout: 34461.25,
+    taux_abs: 0.7, turnover: 6.2,
+    entrees: 0, sorties: { Licenciement: 1 },
+    parite: { fn: 15, hn: 7, fc: 1, hc: 1 },
     absences: [
-      {type:'Arrêt maladie', days:2, organisation_id:'1'},
-      {type:'Absence injustifiée', days:2, organisation_id:'1'},
-      {type:'CP / RTT', days:5, organisation_id:'1'},
-      {type:'Accident de travail / trajet', days:2, organisation_id:'1'},
+      { type: 'Arrêt maladie', days: 2 },
+      { type: 'Absence injustifiée', days: 2 },
+      { type: 'CP / RTT', days: 5 },
+      { type: 'Accident de travail', days: 2 },
     ],
-    kpis: {
-      masse_salariale: 29041.56,
-      masse_salariale_prev: 31593.03,
-      cout_global: 34461.25,
-      taux_absenteisme: 0.7,
-      taux_turnover: 6.2,
-      entrees_total: 0,
-      sorties: { Licenciement:1 },
-    },
-    historique: [
-      { mois:'Janv.', cout:37671.93, masse:27064.44 },
-      { mois:'Fév.', cout:38501.61, masse:31593.03 },
-      { mois:'Mars', cout:34461.25, masse:29041.56 },
-    ]
-  };
+    postes: [{ label: 'Agent polyvalent', n: 20 }, { label: 'Directeur', n: 1 }, { label: 'Dir. adjoint', n: 1 }, { label: 'Resp. Zone', n: 1 }, { label: 'Réf. pôle', n: 1 }],
+    histo: [{ m: 'Janv.', c: 37671.93, ms: 27064.44 }, { m: 'Fév.', c: 38501.61, ms: 31593.03 }, { m: 'Mars', c: 34461.25, ms: 29041.56 }]
+  },
+  rosny: {
+    name: 'Rosny-sous-Bois', dept: '93', color: '#38BDF8',
+    effectif: 42, masse: 54200.00, masse_prev: 52800.00, cout: 62300.00,
+    taux_abs: 1.2, turnover: 8.5,
+    entrees: 2, sorties: { Démission: 1, 'Fin de contrat': 2 },
+    parite: { fn: 22, hn: 15, fc: 3, hc: 2 },
+    absences: [
+      { type: 'Arrêt maladie', days: 5 },
+      { type: 'Absence injustifiée', days: 1 },
+      { type: 'CP / RTT', days: 8 },
+      { type: 'Accident de travail', days: 0 },
+    ],
+    postes: [{ label: 'Agent polyvalent', n: 35 }, { label: 'Directeur', n: 1 }, { label: 'Dir. adjoint', n: 2 }, { label: 'Resp. Zone', n: 2 }, { label: 'Réf. pôle', n: 2 }],
+    histo: [{ m: 'Janv.', c: 59000.00, ms: 51000.00 }, { m: 'Fév.', c: 61000.00, ms: 52800.00 }, { m: 'Mars', c: 62300.00, ms: 54200.00 }]
+  },
+  alfortville: {
+    name: 'Alfortville', dept: '94', color: '#F472B6',
+    effectif: 18, masse: 21500.00, masse_prev: 22100.00, cout: 25800.00,
+    taux_abs: 0.4, turnover: 4.1,
+    entrees: 1, sorties: {},
+    parite: { fn: 10, hn: 6, fc: 1, hc: 1 },
+    absences: [
+      { type: 'Arrêt maladie', days: 1 },
+      { type: 'Absence injustifiée', days: 0 },
+      { type: 'CP / RTT', days: 3 },
+      { type: 'Accident de travail', days: 0 },
+    ],
+    postes: [{ label: 'Agent polyvalent', n: 14 }, { label: 'Directeur', n: 1 }, { label: 'Dir. adjoint', n: 1 }, { label: 'Resp. Zone', n: 1 }, { label: 'Réf. pôle', n: 1 }],
+    histo: [{ m: 'Janv.', c: 26000.00, ms: 22500.00 }, { m: 'Fév.', c: 25500.00, ms: 22100.00 }, { m: 'Mars', c: 25800.00, ms: 21500.00 }]
+  },
+  'sainte-genevieve': {
+    name: 'Sainte-Geneviève', dept: '91', color: '#FB923C',
+    effectif: 20, masse: 24800.00, masse_prev: 23900.00, cout: 29100.00,
+    taux_abs: 0.9, turnover: 5.0,
+    entrees: 0, sorties: { 'Rupture conv.': 1 },
+    parite: { fn: 12, hn: 6, fc: 1, hc: 1 },
+    absences: [
+      { type: 'Arrêt maladie', days: 2 },
+      { type: 'Absence injustifiée', days: 1 },
+      { type: 'CP / RTT', days: 4 },
+      { type: 'Accident de travail', days: 1 },
+    ],
+    postes: [{ label: 'Agent polyvalent', n: 16 }, { label: 'Directeur', n: 1 }, { label: 'Dir. adjoint', n: 1 }, { label: 'Resp. Zone', n: 1 }, { label: 'Réf. pôle', n: 1 }],
+    histo: [{ m: 'Janv.', c: 28000.00, ms: 23200.00 }, { m: 'Fév.', c: 28500.00, ms: 23900.00 }, { m: 'Mars', c: 29100.00, ms: 24800.00 }]
+  }
+};
+
+const PARC_LIST = ['franconville', 'rosny', 'alfortville', 'sainte-genevieve'];
+let activeParc = 'all';
+let activeProxy = 'demo';
+const chartInstances = {};
+
+function destroyCharts() {
+  Object.values(chartInstances).forEach(c => { try { c.destroy(); } catch{} });
+  Object.keys(chartInstances).forEach(k => delete chartInstances[k]);
 }
 
-// ─── Load & render ────────────────────────────────────────────────────────────
+function getActiveData() {
+  if (activeParc === 'all') {
+    const all = Object.values(PARCS);
+    return {
+      name: 'Tous les parcs', color: '#9B59F5',
+      effectif: all.reduce((s,p) => s+p.effectif, 0),
+      masse: all.reduce((s,p) => s+p.masse, 0),
+      masse_prev: all.reduce((s,p) => s+p.masse_prev, 0),
+      cout: all.reduce((s,p) => s+p.cout, 0),
+      taux_abs: (all.reduce((s,p) => s+p.taux_abs, 0)/all.length).toFixed(1)*1,
+      turnover: (all.reduce((s,p) => s+p.turnover, 0)/all.length).toFixed(1)*1,
+      entrees: all.reduce((s,p) => s+p.entrees, 0),
+      sorties: all.reduce((acc,p) => { Object.entries(p.sorties).forEach(([k,v]) => acc[k]=(acc[k]||0)+v); return acc; }, {}),
+      parite: { fn: all.reduce((s,p)=>s+p.parite.fn,0), hn: all.reduce((s,p)=>s+p.parite.hn,0), fc: all.reduce((s,p)=>s+p.parite.fc,0), hc: all.reduce((s,p)=>s+p.parite.hc,0) },
+      absences: PARCS.franconville.absences,
+      postes: PARCS.franconville.postes,
+      histo: PARCS.franconville.histo,
+    };
+  }
+  return PARCS[activeParc];
+}
+
 async function loadAll() {
   const badge = document.getElementById('api-badge');
-  badge.textContent = 'Connexion...';
-  badge.className = 'badge badge-neutral';
-  document.getElementById('main-content').innerHTML = `
-    <div class="loading-screen"><div class="spinner"></div><p style="color:var(--text2)">Chargement des données Skello...</p></div>`;
-
-  const { start, end, label } = getPeriodDates(activePeriod);
-
-  try {
-    // Tenter la connexion au proxy
-    const [orgsRes, empsRes, absRes] = await Promise.all([
-      apiFetch('/api/organisations'),
-      apiFetch('/api/employees?per_page=200' + (activeOrg !== 'all' ? '&organisation_id=' + activeOrg : '')),
-      apiFetch('/api/absences?start_date=' + start + '&end_date=' + end + (activeOrg !== 'all' ? '&organisation_id=' + activeOrg : '')),
-    ]);
-
-    const orgs = orgsRes.organisations || orgsRes.data || [];
-    const emps = empsRes.employees || empsRes.data || [];
-    const abs = absRes.absences || absRes.data || [];
-
-    isDemo = false;
-    document.getElementById('demo-banner').style.display = 'none';
-    badge.textContent = 'API connectée';
-    badge.className = 'badge badge-ok';
-    document.getElementById('last-update').textContent = 'Mis à jour : ' + new Date().toLocaleTimeString('fr-FR');
-
-    populateOrgSelect(orgs);
-    renderAll({ orgs, emps, abs, label, start, end });
-
-  } catch(e) {
-    isDemo = true;
-    document.getElementById('demo-banner').style.display = 'block';
-    badge.textContent = 'Mode démo';
-    badge.className = 'badge badge-warn';
-    document.getElementById('last-update').textContent = 'Données de référence Mars 2026';
-
-    const d = demoData();
-    populateOrgSelect(d.organisations);
-    renderAll({ orgs: d.organisations, emps: d.employees, abs: d.absences, label: 'Mars 2026', demo: d });
-  }
+  badge.textContent = 'Mode démo';
+  badge.className = 'badge badge-demo';
+  document.getElementById('demo-banner').style.display = 'block';
+  document.getElementById('last-update').textContent = 'Mars 2026';
+  renderDashboard();
 }
 
-function populateOrgSelect(orgs) {
-  const sel = document.getElementById('org-select');
-  const current = sel.value;
-  sel.innerHTML = `<option value="all">Tous les parcs (${orgs.length})</option>`;
-  orgs.forEach(o => {
-    const opt = document.createElement('option');
-    opt.value = o.id;
-    opt.textContent = o.name || ('Établissement ' + o.id);
-    if (opt.value === current) opt.selected = true;
-    sel.appendChild(opt);
-  });
-}
-
-// ─── Render dashboard ─────────────────────────────────────────────────────────
-function renderAll({ orgs, emps, abs, label, start, end, demo }) {
+function renderDashboard() {
   destroyCharts();
-
-  const d = demo || computeStats(emps, abs);
-  const kpis = d.kpis;
-  const histo = d.historique;
-
-  const deltaMS = kpis.masse_salariale && kpis.masse_salariale_prev
-    ? ((kpis.masse_salariale - kpis.masse_salariale_prev) / kpis.masse_salariale_prev * 100).toFixed(1)
-    : null;
-
+  const d = getActiveData();
+  const deltaMS = ((d.masse - d.masse_prev) / d.masse_prev * 100).toFixed(1);
   const f = v => v.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  const totalSorties = Object.values(d.sorties).reduce((a,b)=>a+b,0);
 
   document.getElementById('main-content').innerHTML = `
-    <!-- KPI row -->
+    <!-- Parc tabs -->
+    <div class="parcs-tabs">
+      <div class="parc-tab ${activeParc==='all'?'active':''}" onclick="selectParc('all')">🌍 Tous les parcs</div>
+      ${PARC_LIST.map(k => `
+        <div class="parc-tab ${activeParc===k?'active':''}" onclick="selectParc('${k}')" style="${activeParc===k?`background:linear-gradient(135deg, ${PARCS[k].color}99, ${PARCS[k].color}66);border-color:${PARCS[k].color};`:''}">
+          <span style="color:${PARCS[k].color}">●</span> ${PARCS[k].name}
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- KPIs -->
     <div class="kpi-row">
       <div class="kpi-card">
         <div class="label">Effectif total</div>
-        <div class="value">${emps.length || 24}</div>
-        <div class="sub">collaborateurs · ${label}</div>
+        <div class="value">${d.effectif}</div>
+        <div class="sub">collaborateurs</div>
       </div>
       <div class="kpi-card">
         <div class="label">Masse salariale</div>
-        <div class="value">${f(kpis.masse_salariale)} €</div>
-        <div class="sub">
-          ${deltaMS !== null ? `<span class="delta ${deltaMS < 0 ? 'delta-neg' : 'delta-pos'}">${deltaMS > 0 ? '+' : ''}${deltaMS} %</span> vs mois préc.` : '—'}
-        </div>
+        <div class="value" style="font-size:22px">${f(d.masse)} €</div>
+        <div class="sub"><span class="delta ${deltaMS<0?'delta-neg':'delta-pos'}">${deltaMS>0?'+':''}${deltaMS} %</span> vs mois préc.</div>
       </div>
       <div class="kpi-card">
         <div class="label">Coût global</div>
-        <div class="value">${f(kpis.cout_global)} €</div>
-        <div class="sub">charges incluses · ${label}</div>
+        <div class="value" style="font-size:22px">${f(d.cout)} €</div>
+        <div class="sub">charges incluses</div>
       </div>
       <div class="kpi-card">
         <div class="label">Absentéisme</div>
-        <div class="value" style="color:${kpis.taux_absenteisme > 3 ? 'var(--red)' : 'var(--green)'}">${Number(kpis.taux_absenteisme).toFixed(1)} %</div>
-        <div class="sub">taux de la période</div>
+        <div class="value" style="color:${d.taux_abs>3?'#F472B6':'#38BDF8'}">${Number(d.taux_abs).toFixed(1)} %</div>
+        <div class="sub">taux période</div>
       </div>
       <div class="kpi-card">
         <div class="label">Turnover</div>
-        <div class="value" style="color:${kpis.taux_turnover > 10 ? 'var(--red)' : kpis.taux_turnover > 5 ? 'var(--amber)' : 'var(--green)'}">${Number(kpis.taux_turnover).toFixed(1)} %</div>
+        <div class="value" style="color:${d.turnover>10?'#F472B6':d.turnover>5?'#FB923C':'#38BDF8'}">${Number(d.turnover).toFixed(1)} %</div>
         <div class="sub">période glissante</div>
       </div>
       <div class="kpi-card">
         <div class="label">Entrées / Sorties</div>
-        <div class="value"><span style="color:var(--green)">${kpis.entrees_total || 0}</span> / <span style="color:var(--red)">${Object.values(kpis.sorties||{}).reduce((a,b)=>a+b,0)}</span></div>
+        <div class="value"><span style="color:#38BDF8">${d.entrees}</span> / <span style="color:#F472B6">${totalSorties}</span></div>
         <div class="sub">mouvements du mois</div>
       </div>
     </div>
@@ -373,224 +368,173 @@ function renderAll({ orgs, emps, abs, label, start, end, demo }) {
     <div class="grid-3">
       <div class="card">
         <h3>Parité H / F</h3>
-        <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Total : ${emps.length || 24} collaborateurs</p>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Total : ${d.effectif} collaborateurs</p>
         <div id="parite-bars"></div>
       </div>
       <div class="card">
         <h3>Absentéisme par motif</h3>
-        <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Taux global : <strong>${Number(kpis.taux_absenteisme).toFixed(1)} %</strong></p>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Taux global : <strong style="color:var(--nikito-neon)">${Number(d.taux_abs).toFixed(1)} %</strong></p>
         <div id="abs-list"></div>
       </div>
       <div class="card">
         <h3>Turnover & mouvements</h3>
         <div class="turnover-center">
-          <div class="turnover-num" style="color:${kpis.taux_turnover > 10 ? 'var(--red)' : kpis.taux_turnover > 5 ? 'var(--amber)' : 'var(--text)'}">${Number(kpis.taux_turnover).toFixed(1)} %</div>
-          <div class="turnover-sub">taux de turnover</div>
+          <div class="turnover-num">${Number(d.turnover).toFixed(1)} %</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:4px">taux de turnover</div>
           <div class="mvt-row">
-            <div class="mvt-col"><div class="mvt-num" style="color:var(--green)">${kpis.entrees_total || 0}</div><div class="mvt-lbl">Entrées</div></div>
-            <div class="mvt-col"><div class="mvt-num">${emps.length || 24}</div><div class="mvt-lbl">Effectif</div></div>
-            <div class="mvt-col"><div class="mvt-num" style="color:var(--red)">${Object.values(kpis.sorties||{}).reduce((a,b)=>a+b,0)}</div><div class="mvt-lbl">Sorties</div></div>
+            <div class="mvt-col"><div class="mvt-num" style="color:#38BDF8">${d.entrees}</div><div class="mvt-lbl">Entrées</div></div>
+            <div class="mvt-col"><div class="mvt-num">${d.effectif}</div><div class="mvt-lbl">Effectif</div></div>
+            <div class="mvt-col"><div class="mvt-num" style="color:#F472B6">${totalSorties}</div><div class="mvt-lbl">Sorties</div></div>
           </div>
         </div>
-        <div class="mvt-detail" id="mvt-detail"></div>
+        <div class="mvt-detail">${Object.entries(d.sorties).map(([k,v]) => `
+          <div class="mvt-row-detail">
+            <span><span class="mvt-dot" style="background:${v>0?'#F472B6':'var(--text3)'}"></span>${k}</span>
+            <span style="font-weight:700;color:var(--text)">${v}</span>
+          </div>`).join('')}
+        </div>
       </div>
     </div>
 
-    <!-- Row 2 -->
+    <!-- Charts -->
     <div class="grid-2">
       <div class="card">
         <h3>Évolution coût du personnel</h3>
         <div style="display:flex;gap:16px;margin-bottom:12px;font-size:12px;color:var(--text2)">
-          <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#5693D1;display:inline-block"></span>Coût global</span>
-          <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#9f8cd0;display:inline-block"></span>Masse salariale</span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#9B59F5;display:inline-block"></span>Coût global</span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#38BDF8;display:inline-block"></span>Masse salariale</span>
         </div>
-        <div style="position:relative;width:100%;height:220px"><canvas id="chart-cout" role="img" aria-label="Évolution mensuelle coût et masse salariale">Données mensuelles.</canvas></div>
+        <div style="position:relative;width:100%;height:220px"><canvas id="chart-cout" role="img" aria-label="Évolution coût">Données mensuelles.</canvas></div>
       </div>
       <div class="card">
         <h3>Effectifs par poste</h3>
-        <div style="position:relative;width:100%;height:220px"><canvas id="chart-postes" role="img" aria-label="Répartition effectifs par poste">Données postes.</canvas></div>
+        <div style="position:relative;width:100%;height:220px"><canvas id="chart-postes" role="img" aria-label="Postes">Données postes.</canvas></div>
       </div>
     </div>
 
     <!-- Multi-parcs table -->
-    ${orgs.length > 1 ? `
+    ${activeParc === 'all' ? `
     <div class="card" style="margin-bottom:20px">
-      <h3>Vue multi-parcs — ${orgs.length} établissements</h3>
+      <h3>Vue consolidée — 4 parcs NIKITO</h3>
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th>Établissement</th><th>Effectif</th><th>Masse salariale</th><th>Coût global</th>
-            <th>Absentéisme</th><th>Turnover</th><th>Entrées</th><th>Sorties</th><th>Statut</th>
+            <th>Parc</th><th>Effectif</th><th>Masse salariale</th><th>Coût global</th>
+            <th>Absentéisme</th><th>Turnover</th><th>Entrées</th><th>Sorties</th>
           </tr></thead>
-          <tbody id="parcs-tbody"></tbody>
+          <tbody>
+            ${PARC_LIST.map(k => {
+              const p = PARCS[k];
+              const delta = ((p.masse-p.masse_prev)/p.masse_prev*100).toFixed(1);
+              const ts = Object.values(p.sorties).reduce((a,b)=>a+b,0);
+              return `<tr onclick="selectParc('${k}')">
+                <td><span class="parc-badge"><span class="parc-dot" style="background:${p.color}"></span>${p.name} (${p.dept})</span></td>
+                <td style="font-weight:600">${p.effectif}</td>
+                <td>${p.masse.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €<br><span class="delta ${delta<0?'delta-neg':'delta-pos'}" style="font-size:11px">${delta>0?'+':''}${delta}%</span></td>
+                <td>${p.cout.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €</td>
+                <td style="color:${p.taux_abs>3?'#F472B6':'#38BDF8'}">${p.taux_abs} %</td>
+                <td style="color:${p.turnover>10?'#F472B6':p.turnover>5?'#FB923C':'#38BDF8'}">${p.turnover} %</td>
+                <td style="color:#38BDF8;font-weight:600">${p.entrees}</td>
+                <td style="color:${ts>0?'#F472B6':'var(--text2)'};font-weight:600">${ts}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
         </table>
       </div>
     </div>` : ''}
   `;
 
-  renderPariteBars(emps, demo);
-  renderAbsList(abs, demo);
-  renderMvtDetail(kpis);
-  renderCoutChart(histo);
-  renderPostesChart(emps, demo);
-  if (orgs.length > 1) renderParcsTable(orgs, emps, abs, demo);
+  renderPariteBars(d);
+  renderAbsList(d);
+  renderCoutChart(d);
+  renderPostesChart(d);
 }
 
-function computeStats(emps, abs) {
-  return demoData();
-}
-
-// ─── Sub-renderers ────────────────────────────────────────────────────────────
-function renderPariteBars(emps, demo) {
-  const total = emps.length || 24;
-  const cats = demo ? [
-    { label:'Femme non-cadre', n:15, color:'#7F77DD' },
-    { label:'Homme non-cadre', n:7,  color:'#1D9E75' },
-    { label:'Femme cadre',     n:1,  color:'#F0997B' },
-    { label:'Homme cadre',     n:1,  color:'#378ADD' },
-  ] : [
-    { label:'Femme non-cadre', n: emps.filter(e=>e.gender==='female'&&!e.is_cadre).length, color:'#7F77DD' },
-    { label:'Homme non-cadre', n: emps.filter(e=>e.gender==='male'&&!e.is_cadre).length,   color:'#1D9E75' },
-    { label:'Femme cadre',     n: emps.filter(e=>e.gender==='female'&&e.is_cadre).length,  color:'#F0997B' },
-    { label:'Homme cadre',     n: emps.filter(e=>e.gender==='male'&&e.is_cadre).length,    color:'#378ADD' },
-  ];
+function renderPariteBars(d) {
   const el = document.getElementById('parite-bars');
   if (!el) return;
+  const total = d.effectif;
+  const cats = [
+    { label:'Femme non-cadre', n:d.parite.fn, color:'#9B59F5' },
+    { label:'Homme non-cadre', n:d.parite.hn, color:'#38BDF8' },
+    { label:'Femme cadre', n:d.parite.fc, color:'#F472B6' },
+    { label:'Homme cadre', n:d.parite.hc, color:'#FB923C' },
+  ];
   el.innerHTML = cats.map(c => `
     <div class="parite-item">
       <span class="parite-name">${c.label}</span>
       <div class="parite-track"><div class="parite-fill" style="width:${Math.round(c.n/total*100)}%;background:${c.color}"></div></div>
       <span class="parite-count">${c.n}</span>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 const absCfg = [
-  { key:'Arrêt maladie',               color:'#f7c1c1', textColor:'#791f1f' },
-  { key:'Absence injustifiée',          color:'#fac775', textColor:'#412402' },
-  { key:'CP / RTT',                     color:'#b5d4f4', textColor:'#0c447c' },
-  { key:'Accident de travail / trajet', color:'#d3d1c7', textColor:'#444441' },
+  {color:'rgba(244,114,182,0.2)', text:'#F472B6'},
+  {color:'rgba(251,146,60,0.2)', text:'#FB923C'},
+  {color:'rgba(56,189,248,0.2)', text:'#38BDF8'},
+  {color:'rgba(155,89,245,0.2)', text:'#C084FC'},
 ];
 
-function renderAbsList(abs, demo) {
+function renderAbsList(d) {
   const el = document.getElementById('abs-list');
   if (!el) return;
-  const src = demo ? demo.absences : abs;
-  el.innerHTML = (demo ? src : absCfg.map(c => ({type:c.key, days: src.filter(a=>a.type===c.key).reduce((s,a)=>s+(a.days||a.duration_in_days||0),0)}))).map((item, i) => {
-    const cfg = absCfg[i] || {color:'#d3d1c7', textColor:'#444441'};
+  el.innerHTML = d.absences.map((a,i) => {
+    const cfg = absCfg[i] || absCfg[0];
     return `<div class="abs-item">
-      <span class="abs-name">${item.type}</span>
-      <span class="abs-pill" style="background:${cfg.color};color:${cfg.textColor}">${item.days} j</span>
+      <span style="color:var(--text)">${a.type}</span>
+      <span class="abs-pill" style="background:${cfg.color};color:${cfg.text}">${a.days} j</span>
     </div>`;
   }).join('');
 }
 
-function renderMvtDetail(kpis) {
-  const el = document.getElementById('mvt-detail');
-  if (!el) return;
-  const sorties = kpis.sorties || { Licenciement:1 };
-  el.innerHTML = Object.entries(sorties).map(([k,v]) => `
-    <div class="mvt-row-detail">
-      <span><span class="mvt-dot" style="background:${v>0?'var(--red)':'var(--text3)'}"></span>${k}</span>
-      <span style="font-weight:600">${v}</span>
-    </div>
-  `).join('');
-}
-
-const chartInstances = {};
-function destroyCharts() {
-  Object.values(chartInstances).forEach(c => { try { c.destroy(); } catch{} });
-}
-
-function renderCoutChart(histo) {
+function renderCoutChart(d) {
   const ctx = document.getElementById('chart-cout');
   if (!ctx) return;
   chartInstances.cout = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: histo.map(h => h.mois),
+      labels: d.histo.map(h=>h.m),
       datasets: [
-        { label:'Coût global', data: histo.map(h=>h.cout), backgroundColor:'#5693D1', borderRadius:5 },
-        { label:'Masse salariale', data: histo.map(h=>h.masse), backgroundColor:'#9f8cd0', borderRadius:5 },
+        { label:'Coût global', data:d.histo.map(h=>h.c), backgroundColor:'rgba(155,89,245,0.7)', borderRadius:6 },
+        { label:'Masse salariale', data:d.histo.map(h=>h.ms), backgroundColor:'rgba(56,189,248,0.7)', borderRadius:6 },
       ]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ctx.dataset.label+' : '+ctx.raw.toLocaleString('fr-FR')+' €' } } },
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ctx.dataset.label+' : '+ctx.raw.toLocaleString('fr-FR')+' €' } } },
       scales: {
-        y:{ ticks:{ callback: v => (v/1000).toFixed(0)+'k €', font:{size:11} }, grid:{color:'rgba(128,128,128,0.08)'} },
-        x:{ grid:{display:false}, ticks:{font:{size:12}} }
+        y:{ ticks:{ callback: v=>(v/1000).toFixed(0)+'k €', color:'#6B5A8A', font:{size:11} }, grid:{color:'rgba(107,33,232,0.1)'} },
+        x:{ grid:{display:false}, ticks:{color:'#A78BCA', font:{size:12}} }
       }
     }
   });
 }
 
-function renderPostesChart(emps, demo) {
+function renderPostesChart(d) {
   const ctx = document.getElementById('chart-postes');
   if (!ctx) return;
-  const postes = demo ? [
-    {label:'Agent polyvalent',n:20},{label:'Directeur',n:1},{label:'Directeur adjoint',n:1},
-    {label:'Responsable de Zone',n:1},{label:'Référente de pôle',n:1},
-  ] : (() => {
-    const map = {};
-    emps.forEach(e => { const r = e.role||'Non renseigné'; map[r]=(map[r]||0)+1; });
-    return Object.entries(map).map(([label,n])=>({label,n})).sort((a,b)=>b.n-a.n);
-  })();
-
-  const h = Math.max(200, postes.length * 44);
-  ctx.parentElement.style.height = h + 'px';
-
   chartInstances.postes = new Chart(ctx, {
-    type: 'bar', indexAxis: 'y',
+    type:'bar', indexAxis:'y',
     data: {
-      labels: postes.map(p=>p.label),
-      datasets: [{ label:'Effectif', data:postes.map(p=>p.n), backgroundColor:'#7F77DD', borderRadius:4 }]
+      labels: d.postes.map(p=>p.label),
+      datasets: [{ label:'Effectif', data:d.postes.map(p=>p.n), backgroundColor:'rgba(155,89,245,0.7)', borderRadius:4 }]
     },
     options: {
       responsive:true, maintainAspectRatio:false,
       plugins:{ legend:{display:false} },
       scales: {
-        x:{ ticks:{stepSize:1, font:{size:11}}, grid:{color:'rgba(128,128,128,0.08)'} },
-        y:{ grid:{display:false}, ticks:{font:{size:12}} }
+        x:{ ticks:{stepSize:1, color:'#6B5A8A', font:{size:11}}, grid:{color:'rgba(107,33,232,0.1)'} },
+        y:{ grid:{display:false}, ticks:{color:'#A78BCA', font:{size:12}} }
       }
     }
   });
 }
 
-function renderParcsTable(orgs, emps, abs, demo) {
-  const tbody = document.getElementById('parcs-tbody');
-  if (!tbody) return;
-  tbody.innerHTML = orgs.map(org => {
-    const name = org.name || 'Établissement ' + org.id;
-    const orgEmps = emps.filter(e => e.organisation_id === org.id);
-    const orgAbs = abs.filter(a => a.organisation_id === org.id);
-    const eff = orgEmps.length || '—';
-    const status = orgEmps.length > 0
-      ? '<span class="badge badge-ok">Actif</span>'
-      : '<span class="badge badge-neutral">—</span>';
-    return `<tr onclick="selectOrg('${org.id}')">
-      <td style="font-weight:600">${name}</td>
-      <td>${eff}</td>
-      <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
-      <td>${status}</td>
-    </tr>`;
-  }).join('');
-}
+function selectParc(k) { activeParc = k; document.getElementById('parc-select').value = k; renderDashboard(); }
+function onParcChange() { activeParc = document.getElementById('parc-select').value; renderDashboard(); }
+function onPeriodChange() { loadAll(); }
+function onProxyChange() { activeProxy = document.getElementById('proxy-select').value; loadAll(); }
 
-// ─── Events ───────────────────────────────────────────────────────────────────
-function onOrgChange() { activeOrg = document.getElementById('org-select').value; loadAll(); }
-function onPeriodChange() { activePeriod = document.getElementById('period-select').value; loadAll(); }
-function onProxyChange() {
-  const v = document.getElementById('proxy-url-select').value;
-  if (v === 'custom') {
-    const u = prompt('Entrez l\'URL de votre proxy (ex: https://monproxy.railway.app)');
-    if (u) PROXY = u.replace(/\/$/, '');
-  } else { PROXY = v; }
-  loadAll();
-}
-function selectOrg(id) { document.getElementById('org-select').value = id; activeOrg = id; loadAll(); }
-
-// ─── Init ─────────────────────────────────────────────────────────────────────
 loadAll();
 </script>
 </body>

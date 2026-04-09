@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-const AUTH_BASE = 'https://auth.skello.io';
+const AUTH_BASE = 'https://api.skello.io';
 const API_KEY = process.env.SKELLO_TOKEN;
 
 let jwtToken = null;

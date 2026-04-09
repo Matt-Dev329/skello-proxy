@@ -31,7 +31,7 @@ app.use(rateLimit({
 }));
 
 // ─── Config Skello ─────────────────────────────────────────────────────────────
-const SKELLO_BASE = 'https://api.skello.io/v3';
+const SKELLO_BASE = 'https://api.skello.io/v1';
 const SKELLO_TOKEN = process.env.SKELLO_TOKEN; // jamais dans le code !
 
 if (!SKELLO_TOKEN) {
@@ -46,7 +46,7 @@ async function skelloGet(path, queryParams = {}) {
 
   const res = await fetch(url.toString(), {
     headers: {
-      'X-USER-TOKEN': SKELLO_TOKEN,
+      'X-API-Key': SKELLO_TOKEN,
       'Content-Type': 'application/json',
     },
   });

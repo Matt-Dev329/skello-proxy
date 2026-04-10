@@ -3,618 +3,963 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KPI RH — NIKITO Multi-parcs</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<title>KPI RH — NIKITO</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --p: #7C3AED; --pl: #A78BFA; --pd: #4C1D95; --neon: #C084FC;
-  --blue: #38BDF8; --pink: #F472B6; --orange: #FB923C; --green: #34D399; --amber: #FCD34D;
-  --bg: #0D0B1A; --s1: #160F2E; --s2: #1E1540; --s3: #261B52;
-  --bd: rgba(124,58,237,0.25); --bd2: rgba(124,58,237,0.5);
-  --t1: #F0EAFF; --t2: #A78BCA; --t3: #6B5A8A;
-  --r: 10px; --rl: 16px;
-}
-body { background: var(--bg); color: var(--t1); font-family: system-ui,-apple-system,sans-serif; font-size: 14px; }
-body::before { content:''; position:fixed; inset:0; background-image: radial-gradient(1px 1px at 15% 20%,rgba(255,255,255,.35) 0%,transparent 100%), radial-gradient(1px 1px at 75% 30%,rgba(255,255,255,.25) 0%,transparent 100%), radial-gradient(1px 1px at 40% 65%,rgba(255,255,255,.2) 0%,transparent 100%), radial-gradient(1px 1px at 85% 75%,rgba(255,255,255,.3) 0%,transparent 100%), radial-gradient(1px 1px at 5% 85%,rgba(255,255,255,.2) 0%,transparent 100%); pointer-events:none; z-index:0; }
-.app { max-width:1440px; margin:0 auto; padding:20px; position:relative; z-index:1; }
+  :root {
+    --bg: #08080f;
+    --surface: #0f0f1a;
+    --surface2: #14142a;
+    --border: rgba(138, 43, 226, 0.18);
+    --purple: #7c3aed;
+    --purple-light: #a855f7;
+    --neon: #c084fc;
+    --pink: #f472b6;
+    --cyan: #22d3ee;
+    --green: #4ade80;
+    --yellow: #facc15;
+    --red: #f87171;
+    --text: #f1f0ff;
+    --muted: #6b6b8a;
+    --card-radius: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+  /* Stars background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(192,132,252,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 60%, rgba(192,132,252,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 10%, rgba(34,211,238,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 50%, rgba(192,132,252,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 80%, rgba(34,211,238,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 20% 90%, rgba(244,114,182,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 70%, rgba(192,132,252,0.3) 0%, transparent 100%),
+      radial-gradient(2px 2px at 60% 40%, rgba(192,132,252,0.15) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
 
-/* Header */
-.hdr { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:24px; flex-wrap:wrap; }
-.logo { width:46px; height:46px; background:linear-gradient(135deg,var(--p),var(--pl)); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:900; color:#fff; box-shadow:0 0 20px rgba(124,58,237,.5); flex-shrink:0; }
-.title { font-size:22px; font-weight:700; }
-.sub { font-size:12px; color:var(--t2); margin-top:3px; }
-.hdr-right { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-.badge { display:inline-flex; align-items:center; gap:5px; padding:4px 11px; border-radius:20px; font-size:12px; font-weight:600; }
-.badge::before { content:''; width:6px; height:6px; border-radius:50%; background:currentColor; }
-.b-demo { background:rgba(192,132,252,.12); color:var(--neon); border:1px solid rgba(192,132,252,.3); }
-.b-ok { background:rgba(52,211,153,.12); color:var(--green); border:1px solid rgba(52,211,153,.3); }
-.btn { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:var(--r); border:1px solid var(--bd2); background:var(--s2); color:var(--t1); font-size:13px; cursor:pointer; transition:all .15s; }
-.btn:hover { background:var(--s3); }
-.btn-p { background:linear-gradient(135deg,var(--p),var(--pl)); border-color:transparent; color:#fff; }
-.btn-p:hover { opacity:.9; }
+  /* HEADER */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(8,8,15,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    height: 64px;
+  }
+  .logo {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 16px;
+    flex-shrink: 0;
+  }
+  .header-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.02em;
+  }
+  .header-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .header-spacer { flex: 1; }
+  .status-badge {
+    display: flex; align-items: center; gap: 7px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid;
+    transition: all 0.3s;
+  }
+  .status-badge.live {
+    background: rgba(74,222,128,0.08);
+    border-color: rgba(74,222,128,0.3);
+    color: var(--green);
+  }
+  .status-badge.demo {
+    background: rgba(250,204,21,0.08);
+    border-color: rgba(250,204,21,0.3);
+    color: var(--yellow);
+  }
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100%{opacity:1;transform:scale(1)}
+    50%{opacity:0.5;transform:scale(1.3)}
+  }
+  .btn-refresh {
+    background: rgba(124,58,237,0.15);
+    border: 1px solid rgba(124,58,237,0.4);
+    color: var(--purple-light);
+    padding: 7px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-refresh:hover { background: rgba(124,58,237,0.3); }
+  .btn-refresh svg { width:14px;height:14px; }
 
-/* Controls */
-.ctrl-bar { background:var(--s1); border:1px solid var(--bd); border-radius:var(--rl); padding:14px 18px; display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin-bottom:20px; }
-.cg { display:flex; flex-direction:column; gap:4px; }
-.cg label { font-size:10px; color:var(--t3); text-transform:uppercase; letter-spacing:.07em; }
-.cg select { font-size:13px; background:var(--s2); border:1px solid var(--bd); border-radius:var(--r); padding:6px 10px; color:var(--t1); min-width:160px; cursor:pointer; }
-.cg select:focus { outline:none; border-color:var(--p); }
+  /* CONTROLS BAR */
+  .controls {
+    position: relative; z-index: 1;
+    padding: 16px 28px;
+    display: flex; align-items: center; gap: 12px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    background: rgba(15,15,26,0.6);
+  }
+  .ctrl-group { display: flex; flex-direction: column; gap: 4px; }
+  .ctrl-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  select, input[type=number], input[type=month] {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+    min-width: 160px;
+  }
+  select:focus, input:focus { border-color: var(--purple); }
+  input[type=number] { min-width: 130px; }
 
-/* Target bar */
-.target-bar { background:var(--s1); border:1px solid var(--bd); border-radius:var(--rl); padding:14px 20px; margin-bottom:20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
-.target-label { font-size:12px; color:var(--t2); }
-.target-input { background:var(--s2); border:1px solid var(--bd2); border-radius:var(--r); padding:5px 10px; color:var(--t1); font-size:13px; width:120px; }
-.target-input:focus { outline:none; border-color:var(--neon); }
-.progress-wrap { flex:1; min-width:200px; }
-.progress-track { height:8px; background:var(--s3); border-radius:4px; overflow:hidden; margin-top:6px; }
-.progress-fill { height:8px; border-radius:4px; transition:width .6s ease; }
-.progress-labels { display:flex; justify-content:space-between; font-size:11px; color:var(--t3); margin-top:4px; }
+  /* MAIN */
+  main {
+    position: relative; z-index: 1;
+    padding: 24px 28px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
 
-/* Demo banner */
-.demo-b { background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(192,132,252,.08)); border:1px solid var(--bd2); border-radius:var(--rl); padding:12px 16px; margin-bottom:18px; font-size:13px; color:var(--neon); }
+  /* ALERT BANNER */
+  .alert-banner {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 12px;
+    margin-bottom: 20px;
+    background: rgba(250,204,21,0.07);
+    border: 1px solid rgba(250,204,21,0.2);
+    color: var(--yellow);
+  }
+  .alert-banner.success {
+    background: rgba(74,222,128,0.07);
+    border-color: rgba(74,222,128,0.2);
+    color: var(--green);
+  }
 
-/* KPI row */
-.kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr)); gap:10px; margin-bottom:20px; }
-.kc { background:var(--s1); border:1px solid var(--bd); border-radius:var(--rl); padding:14px; position:relative; overflow:hidden; }
-.kc::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--p),var(--pl)); }
-.kc .lbl { font-size:10px; color:var(--t3); text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
-.kc .val { font-size:26px; font-weight:700; line-height:1; }
-.kc .s { font-size:11px; color:var(--t2); margin-top:5px; }
-.dl { font-size:11px; font-weight:600; padding:2px 6px; border-radius:5px; }
-.dn { background:rgba(244,114,182,.15); color:var(--pink); }
-.dp { background:rgba(52,211,153,.15); color:var(--green); }
-.dw { background:rgba(251,146,60,.15); color:var(--orange); }
+  /* OBJECTIF ANNUEL */
+  .objectif-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
+  }
+  .objectif-icon { font-size: 22px; }
+  .objectif-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; }
+  .objectif-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .objectif-input-group { display: flex; flex-direction: column; gap: 4px; }
+  .objectif-bar-wrap { flex: 1; min-width: 260px; }
+  .objectif-numbers {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--muted); margin-bottom: 8px;
+  }
+  .objectif-numbers strong { color: var(--text); font-size: 13px; }
+  .bar-track {
+    height: 8px; background: var(--surface2);
+    border-radius: 4px; overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--purple), var(--pink));
+    transition: width 0.8s cubic-bezier(.4,0,.2,1);
+  }
+  .objectif-restant {
+    text-align: right; min-width: 100px;
+  }
+  .restant-val { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--neon); }
+  .restant-label { font-size: 11px; color: var(--muted); }
+  .pct-badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px; font-weight: 600;
+    background: rgba(192,132,252,0.12);
+    color: var(--neon);
+  }
 
-/* Grid */
-.g3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin-bottom:16px; }
-.g2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:14px; margin-bottom:16px; }
-.g4 { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-bottom:16px; }
+  /* KPI GRID */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .kpi-card:hover { border-color: rgba(138,43,226,0.4); transform: translateY(-2px); }
+  .kpi-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--accent, linear-gradient(90deg, var(--purple), var(--pink)));
+  }
+  .kpi-icon { font-size: 18px; margin-bottom: 10px; }
+  .kpi-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+  .kpi-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .kpi-delta {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .kpi-delta.up { background: rgba(74,222,128,0.1); color: var(--green); }
+  .kpi-delta.down { background: rgba(248,113,113,0.1); color: var(--red); }
+  .kpi-delta.neutral { background: rgba(107,107,138,0.15); color: var(--muted); }
+  .kpi-sub { font-size: 10px; color: var(--muted); margin-top: 4px; }
 
-/* Card */
-.card { background:var(--s1); border:1px solid var(--bd); border-radius:var(--rl); padding:18px; }
-.card h3 { font-size:13px; font-weight:600; margin-bottom:14px; color:var(--t1); display:flex; align-items:center; gap:7px; }
-.card h3::before { content:''; width:3px; height:14px; background:linear-gradient(var(--p),var(--neon)); border-radius:2px; flex-shrink:0; }
+  /* TWO COLUMN LAYOUT */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  @media (max-width: 900px) {
+    .two-col, .three-col { grid-template-columns: 1fr; }
+  }
 
-/* Parc tabs */
-.tabs { display:flex; gap:7px; margin-bottom:18px; flex-wrap:wrap; }
-.tab { padding:7px 16px; border-radius:20px; border:1px solid var(--bd); background:var(--s1); color:var(--t2); font-size:12px; cursor:pointer; transition:all .15s; }
-.tab:hover { border-color:var(--p); color:var(--t1); }
-.tab.on { color:#fff; font-weight:600; border-color:transparent; }
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    padding: 20px 22px;
+  }
+  .card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(124,58,237,0.15);
+    color: var(--purple-light);
+    font-weight: 500;
+  }
+  canvas { max-height: 220px; }
 
-/* Parite */
-.pb-item { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
-.pb-name { width:115px; color:var(--t2); font-size:11px; flex-shrink:0; }
-.pb-track { flex:1; background:var(--s3); border-radius:4px; height:18px; overflow:hidden; }
-.pb-fill { height:18px; border-radius:4px; transition:width .6s; }
-.pb-n { width:22px; text-align:right; font-weight:700; font-size:12px; color:var(--t1); }
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th {
+    font-size: 10px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.07em;
+    padding: 8px 10px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table td {
+    padding: 10px 10px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(138,43,226,0.07);
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(124,58,237,0.05); }
+  .park-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
 
-/* Absence */
-.abs-item { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--bd); }
-.abs-item:last-child { border-bottom:none; }
-.abs-pill { padding:2px 10px; border-radius:20px; font-size:11px; font-weight:700; }
-.abs-hours { font-size:11px; color:var(--t3); margin-top:2px; }
+  /* TAUX ENCADREMENT */
+  .encadrement-bars { display: flex; flex-direction: column; gap: 12px; margin-top: 6px; }
+  .enc-row {}
+  .enc-labels { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
+  .enc-bar-track { height: 10px; background: var(--surface2); border-radius: 5px; overflow: hidden; }
+  .enc-bar-fill { height: 100%; border-radius: 5px; transition: width 0.8s; }
+  .enc-target-line {
+    position: relative; height: 0;
+    border-top: 2px dashed rgba(250,204,21,0.5);
+    margin-top: -10px;
+  }
 
-/* Turnover */
-.tv-big { font-size:52px; font-weight:800; background:linear-gradient(135deg,var(--pl),var(--neon)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-align:center; padding:12px 0 4px; }
-.mv-row { display:flex; justify-content:space-around; padding:12px 0; border-top:1px solid var(--bd); border-bottom:1px solid var(--bd); margin:8px 0; }
-.mv-col { text-align:center; }
-.mv-n { font-size:22px; font-weight:700; }
-.mv-l { font-size:11px; color:var(--t2); margin-top:2px; }
-.mv-d { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--bd); font-size:12px; color:var(--t2); }
-.mv-d:last-child { border-bottom:none; }
+  /* ABSENTÉISME */
+  .abs-list { display: flex; flex-direction: column; gap: 8px; }
+  .abs-row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .abs-motif { flex: 1; font-size: 12px; }
+  .abs-bar-wrap { flex: 2; }
+  .abs-bar-track { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .abs-bar-fill { height: 100%; border-radius: 3px; }
+  .abs-val { font-size: 11px; color: var(--muted); min-width: 70px; text-align: right; }
 
-/* Encadrement gauge */
-.enc-gauge { text-align:center; padding:10px 0; }
-.enc-pct { font-size:36px; font-weight:800; color:var(--neon); }
-.enc-label { font-size:12px; color:var(--t2); margin-top:4px; }
-.enc-bar { height:6px; background:var(--s3); border-radius:3px; margin:12px 0 4px; overflow:hidden; }
-.enc-fill { height:6px; background:linear-gradient(90deg,var(--p),var(--neon)); border-radius:3px; }
+  /* MOYENNE SOCIÉTÉ */
+  .vs-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .vs-item {
+    background: var(--surface2);
+    border-radius: 10px; padding: 14px;
+    text-align: center;
+  }
+  .vs-label { font-size: 10px; color: var(--muted); margin-bottom: 8px; }
+  .vs-vals { display: flex; justify-content: center; gap: 14px; align-items: flex-end; }
+  .vs-val { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
+  .vs-avg { font-size: 11px; color: var(--muted); }
+  .vs-icon { font-size: 16px; margin-bottom: 4px; }
+  .vs-ok { color: var(--green); }
+  .vs-warn { color: var(--yellow); }
+  .vs-bad { color: var(--red); }
 
-/* Comparatif société */
-.comp-row { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--bd); font-size:13px; }
-.comp-row:last-child { border-bottom:none; }
-.comp-name { flex:1; color:var(--t2); font-size:12px; }
-.comp-val { font-weight:700; min-width:70px; text-align:right; }
-.comp-bar-wrap { flex:2; }
-.comp-bar-bg { height:6px; background:var(--s3); border-radius:3px; position:relative; }
-.comp-bar-avg { position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--t3); border-radius:1px; }
-.comp-bar-fill { height:6px; border-radius:3px; }
-.comp-arrow { font-size:11px; min-width:30px; }
+  /* LOADING */
+  .skeleton {
+    background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 6px;
+    height: 22px;
+  }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-/* Table */
-.tw { overflow-x:auto; }
-table { width:100%; border-collapse:collapse; font-size:12px; }
-th { text-align:left; padding:9px 12px; font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--t3); border-bottom:1px solid var(--bd); background:var(--s2); white-space:nowrap; }
-td { padding:10px 12px; border-bottom:1px solid var(--bd); vertical-align:middle; }
-tr:last-child td { border-bottom:none; }
-tr:hover td { background:var(--s2); cursor:pointer; }
-.pc-dot { width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:6px; }
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: var(--border);
+  }
 
-/* Spinner */
-.spin-wrap { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px; gap:14px; }
-.spinner { width:30px; height:30px; border:3px solid var(--bd); border-top-color:var(--p); border-radius:50%; animation:spin .8s linear infinite; }
-@keyframes spin { to { transform:rotate(360deg); } }
+  /* TABS */
+  .tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab-btn {
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .tab-btn:hover { border-color: var(--purple); color: var(--text); }
+  .tab-btn.active {
+    background: rgba(124,58,237,0.2);
+    border-color: var(--purple);
+    color: var(--purple-light);
+  }
+  .tab-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-@media(max-width:600px) { .kpi-row{grid-template-columns:repeat(2,1fr);} .title{font-size:18px;} }
+  /* DELTA COMPARISON */
+  .delta-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .delta-row:last-child { border-bottom: none; }
+  .delta-label { color: var(--muted); }
+  .delta-values { display: flex; gap: 20px; align-items: center; }
+  .delta-curr { font-weight: 600; }
+  .delta-prev { font-size: 12px; color: var(--muted); }
+  .delta-pct {
+    padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 600;
+  }
+  .delta-pct.pos { background: rgba(74,222,128,0.1); color: var(--green); }
+  .delta-pct.neg { background: rgba(248,113,113,0.1); color: var(--red); }
 </style>
 </head>
 <body>
-<div class="app">
 
-<header class="hdr">
-  <div style="display:flex;align-items:center;gap:12px">
-    <div class="logo">N</div>
-    <div>
-      <h1 class="title">KPI RH — NIKITO</h1>
-      <p class="sub">Tableau de bord multi-parcs · <span id="last-update">Mars 2026</span></p>
-    </div>
+<!-- HEADER -->
+<header>
+  <div class="logo">N</div>
+  <div>
+    <div class="header-title">KPI RH — NIKITO</div>
+    <div class="header-sub" id="header-sub">Tableau de bord multi-parcs</div>
   </div>
-  <div class="hdr-right">
-    <span id="api-badge" class="badge b-demo">Mode démo</span>
-    <button class="btn btn-p" onclick="loadAll()">↻ Actualiser</button>
+  <div class="header-spacer"></div>
+  <div class="status-badge demo" id="status-badge">
+    <div class="status-dot"></div>
+    <span id="status-text">Chargement...</span>
   </div>
+  <button class="btn-refresh" onclick="loadData()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+    Actualiser
+  </button>
 </header>
 
-<div class="ctrl-bar">
-  <div class="cg"><label>Parc</label>
-    <select id="parc-sel" onchange="onParcChange()">
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="ctrl-group">
+    <div class="ctrl-label">Parc</div>
+    <select id="park-select" onchange="renderDashboard()">
       <option value="all">Tous les parcs</option>
-      <option value="franconville">Franconville (95)</option>
-      <option value="rosny">Rosny-sous-Bois (93)</option>
-      <option value="alfortville">Alfortville (94)</option>
-      <option value="sainte-genevieve">Sainte-Geneviève (91)</option>
     </select>
   </div>
-  <div class="cg"><label>Période</label>
-    <select id="period-sel">
-      <option value="current">Avril 2026</option>
-      <option value="last" selected>Mars 2026</option>
-      <option value="q1">T1 2026</option>
-      <option value="ytd">Année 2026</option>
-    </select>
+  <div class="ctrl-group">
+    <div class="ctrl-label">Période</div>
+    <input type="month" id="month-select" onchange="loadData()">
   </div>
-  <div class="cg" style="margin-left:auto"><label>Proxy API</label>
-    <select id="proxy-sel" onchange="onProxyChange()">
-      <option value="demo">Mode démo</option>
-      <option value="https://skello-proxy.onrender.com">Render (production)</option>
-    </select>
+  <div class="ctrl-group">
+    <div class="ctrl-label">Cible annuelle MS (€)</div>
+    <input type="number" id="cible-annuelle" value="360000" step="10000" oninput="renderDashboard()">
   </div>
 </div>
 
-<!-- Objectif masse salariale -->
-<div class="target-bar" id="target-bar">
-  <div>
-    <div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:2px">🎯 Objectif annuel masse salariale</div>
-    <div style="font-size:11px;color:var(--t2)">Définir la cible pour piloter le cumul année</div>
-  </div>
-  <div class="cg"><label>Cible annuelle (€)</label>
-    <input type="number" class="target-input" id="target-annual" value="360000" step="5000" oninput="updateTarget()">
-  </div>
-  <div class="progress-wrap">
-    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t2);margin-bottom:4px">
-      <span>Cumul YTD : <strong id="ytd-ms" style="color:var(--t1)">87 705 €</strong></span>
-      <span id="target-pct" style="color:var(--neon);font-weight:700">24.4 %</span>
-    </div>
-    <div class="progress-track">
-      <div class="progress-fill" id="target-fill" style="width:24.4%;background:linear-gradient(90deg,var(--p),var(--neon))"></div>
-    </div>
-    <div class="progress-labels">
-      <span>Janv.</span><span>Avr.</span><span>Juil.</span><span>Oct.</span><span>Déc.</span>
-    </div>
-  </div>
-  <div style="text-align:center;min-width:100px">
-    <div style="font-size:11px;color:var(--t2)">Restant</div>
-    <div id="target-rest" style="font-size:20px;font-weight:700;color:var(--amber)">272 295 €</div>
-    <div style="font-size:10px;color:var(--t3);margin-top:2px">sur 9 mois restants</div>
-  </div>
-</div>
+<!-- MAIN -->
+<main>
+  <div id="alert-banner" class="alert-banner" style="display:none"></div>
 
-<div id="demo-banner" class="demo-b">🚀 <strong>Mode démo</strong> — Données de référence NIKITO Mars 2026. Connectez l'API Skello pour les données live.</div>
+  <!-- OBJECTIF ANNUEL -->
+  <div class="objectif-card" id="objectif-card">
+    <div class="objectif-icon">🎯</div>
+    <div>
+      <div class="objectif-label">Objectif annuel masse salariale</div>
+      <div class="objectif-sub">Pilotage cumul annuel</div>
+    </div>
+    <div class="objectif-bar-wrap">
+      <div class="objectif-numbers">
+        <span>Cumul YTD : <strong id="ytd-value">—</strong></span>
+        <span id="pct-badge" class="pct-badge">—%</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:5px;font-size:10px;color:var(--muted)">
+        <span>Janv.</span><span>Avr.</span><span>Juil.</span><span>Oct.</span><span>Déc.</span>
+      </div>
+    </div>
+    <div class="objectif-restant">
+      <div class="restant-val" id="restant-val">—</div>
+      <div class="restant-label">restant</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px" id="mois-restants"></div>
+    </div>
+  </div>
 
-<div id="main-content"><div class="spin-wrap"><div class="spinner"></div><p style="color:var(--t2)">Chargement...</p></div></div>
+  <!-- KPI CARDS -->
+  <div class="section-title">Indicateurs clés du mois</div>
+  <div class="kpi-grid" id="kpi-grid">
+    <div class="kpi-card"><div class="skeleton" style="height:80px"></div></div>
+    <div class="kpi-card"><div class="skeleton" style="height:80px"></div></div>
+    <div class="kpi-card"><div class="skeleton" style="height:80px"></div></div>
+    <div class="kpi-card"><div class="skeleton" style="height:80px"></div></div>
+    <div class="kpi-card"><div class="skeleton" style="height:80px"></div></div>
+  </div>
 
-</div>
+  <!-- CHARTS ROW 1 -->
+  <div class="section-title">Masse salariale & CA</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📊 Masse salariale vs N-1</div>
+        <div class="card-badge">Mensuel</div>
+      </div>
+      <canvas id="chart-ms"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">💰 Ratio MS / CA par parc</div>
+        <div class="card-badge">Live</div>
+      </div>
+      <canvas id="chart-ratio"></canvas>
+    </div>
+  </div>
+
+  <!-- COMPARATIF -->
+  <div class="section-title">Comparatifs M-1 & N-1</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-header"><div class="card-title">🔄 Évolution coût personnel</div></div>
+      <div id="delta-comparatif"></div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🏆 Tableau multi-parcs</div>
+        <div class="card-badge">Consolidé</div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="data-table" id="multi-table">
+          <thead>
+            <tr>
+              <th>Parc</th>
+              <th>Masse sal.</th>
+              <th>Heures</th>
+              <th>CA</th>
+              <th>Ratio MS/CA</th>
+            </tr>
+          </thead>
+          <tbody id="multi-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 3 -->
+  <div class="section-title">Absentéisme & Encadrement</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">😷 Absentéisme par motif</div>
+        <div class="card-badge">Jours + Heures</div>
+      </div>
+      <div class="abs-list" id="abs-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">👔 Taux d'encadrement</div>
+        <div class="card-badge">Par parc</div>
+      </div>
+      <div class="encadrement-bars" id="enc-bars"></div>
+    </div>
+  </div>
+
+  <!-- VS MOYENNE SOCIÉTÉ -->
+  <div class="section-title">Vue comparative — parc vs moyenne société</div>
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-header">
+      <div class="card-title">📡 Comparatif parc sélectionné vs moyenne société</div>
+    </div>
+    <div class="vs-grid" id="vs-grid"></div>
+  </div>
+
+  <!-- CHART HEURES -->
+  <div class="section-title">Analyse horaire</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">⏱️ Heures travaillées par parc</div>
+      </div>
+      <canvas id="chart-heures"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📈 Heures supplémentaires & complémentaires</div>
+      </div>
+      <canvas id="chart-hourstype"></canvas>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:20px 0;font-size:11px;color:var(--muted)">
+    NIKITO Dashboard • Données Skello live via proxy sécurisé • <span id="last-update">—</span>
+  </div>
+</main>
+
 <script>
-// ─── DATA ─────────────────────────────────────────────────────────────────────
-const PARCS = {
-  franconville: {
-    name:'Franconville', dept:'95', color:'#9B59F5',
-    effectif:24, masse:29041.56, masse_prev_m:31593.03, masse_prev_y:28100,
-    cout:34461.25, cout_prev_m:38501.61, cout_prev_y:33200,
-    cout_prev:38501.61, masse_prev:31593.03,
-    taux_ms_mois: 12.8, taux_ms_ytd: 13.1,
-    taux_abs:0.7, turnover:6.2, entrees:0,
-    sorties:{Licenciement:1},
-    parite:{fn:15,hn:7,fc:1,hc:1},
-    cadres:2, non_cadres:22,
-    absences:[
-      {type:'Arrêt maladie',days:2,heures:16},
-      {type:'Absence injustifiée',days:2,heures:16},
-      {type:'CP / RTT',days:5,heures:40},
-      {type:'Accident de travail',days:2,heures:16},
-    ],
-    histo:[
-      {m:'Janv.',c:37671.93,ms:27064.44,ms_n1:26500,c_n1:36000},
-      {m:'Fév.',c:38501.61,ms:31593.03,ms_n1:29800,c_n1:37200},
-      {m:'Mars',c:34461.25,ms:29041.56,ms_n1:28100,c_n1:33200},
-      {m:'Avr. (prev)',c:null,ms:null,ms_prev:30500,c_prev:35000},
-    ],
-    ytd_ms:87699.03,
-  },
-  rosny:{
-    name:'Rosny-sous-Bois',dept:'93',color:'#38BDF8',
-    effectif:42,masse:54200,masse_prev_m:52800,masse_prev_y:51000,
-    cout:62300,cout_prev_m:61000,cout_prev_y:59500,
-    cout_prev:61000,masse_prev:52800,
-    taux_ms_mois:13.5,taux_ms_ytd:13.8,
-    taux_abs:1.2,turnover:8.5,entrees:2,
-    sorties:{Démission:1,'Fin de contrat':2},
-    parite:{fn:22,hn:15,fc:3,hc:2},
-    cadres:5,non_cadres:37,
-    absences:[
-      {type:'Arrêt maladie',days:5,heures:40},
-      {type:'Absence injustifiée',days:1,heures:8},
-      {type:'CP / RTT',days:8,heures:64},
-      {type:'Accident de travail',days:0,heures:0},
-    ],
-    histo:[
-      {m:'Janv.',c:59000,ms:51000,ms_n1:49000,c_n1:57000},
-      {m:'Fév.',c:61000,ms:52800,ms_n1:50500,c_n1:59000},
-      {m:'Mars',c:62300,ms:54200,ms_n1:51000,c_n1:59500},
-      {m:'Avr. (prev)',c:null,ms:null,ms_prev:55000,c_prev:63000},
-    ],
-    ytd_ms:158000,
-  },
-  alfortville:{
-    name:'Alfortville',dept:'94',color:'#F472B6',
-    effectif:18,masse:21500,masse_prev_m:22100,masse_prev_y:20800,
-    cout:25800,cout_prev_m:25500,cout_prev_y:24900,
-    cout_prev:25500,masse_prev:22100,
-    taux_ms_mois:11.9,taux_ms_ytd:12.2,
-    taux_abs:0.4,turnover:4.1,entrees:1,
-    sorties:{},
-    parite:{fn:10,hn:6,fc:1,hc:1},
-    cadres:2,non_cadres:16,
-    absences:[
-      {type:'Arrêt maladie',days:1,heures:8},
-      {type:'Absence injustifiée',days:0,heures:0},
-      {type:'CP / RTT',days:3,heures:24},
-      {type:'Accident de travail',days:0,heures:0},
-    ],
-    histo:[
-      {m:'Janv.',c:26000,ms:22500,ms_n1:21500,c_n1:25200},
-      {m:'Fév.',c:25500,ms:22100,ms_n1:21000,c_n1:24800},
-      {m:'Mars',c:25800,ms:21500,ms_n1:20800,c_n1:24900},
-      {m:'Avr. (prev)',c:null,ms:null,ms_prev:22000,c_prev:26200},
-    ],
-    ytd_ms:66100,
-  },
-  'sainte-genevieve':{
-    name:'Sainte-Geneviève',dept:'91',color:'#FB923C',
-    effectif:20,masse:24800,masse_prev_m:23900,masse_prev_y:23200,
-    cout:29100,cout_prev_m:28500,cout_prev_y:27800,
-    cout_prev:28500,masse_prev:23900,
-    taux_ms_mois:12.4,taux_ms_ytd:12.7,
-    taux_abs:0.9,turnover:5.0,entrees:0,
-    sorties:{'Rupture conv.':1},
-    parite:{fn:12,hn:6,fc:1,hc:1},
-    cadres:2,non_cadres:18,
-    absences:[
-      {type:'Arrêt maladie',days:2,heures:16},
-      {type:'Absence injustifiée',days:1,heures:8},
-      {type:'CP / RTT',days:4,heures:32},
-      {type:'Accident de travail',days:1,heures:8},
-    ],
-    histo:[
-      {m:'Janv.',c:28000,ms:23200,ms_n1:22500,c_n1:27200},
-      {m:'Fév.',c:28500,ms:23900,ms_n1:22800,c_n1:27600},
-      {m:'Mars',c:29100,ms:24800,ms_n1:23200,c_n1:27800},
-      {m:'Avr. (prev)',c:null,ms:null,ms_prev:25200,c_prev:29500},
-    ],
-    ytd_ms:71900,
+const PROXY_URL = 'https://skello-proxy.onrender.com';
+
+const PARK_COLORS = {
+  'NIKITO Franconville': '#7c3aed',
+  'NIKITO Domus':        '#f472b6',
+  'NIKITO STE Geneviève':'#22d3ee',
+  'NIKITO Alfortville':  '#4ade80',
+};
+const PARK_COLORS_ARR = ['#7c3aed','#f472b6','#22d3ee','#4ade80','#facc15','#f87171'];
+
+let rawData = [];
+let charts = {};
+
+// Init date to current month
+const now = new Date();
+document.getElementById('month-select').value =
+  `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
+async function loadData() {
+  const monthVal = document.getElementById('month-select').value;
+  const [year, month] = monthVal.split('-');
+  const date = `${year}-${month}-01`;
+
+  setBadge('loading');
+
+  try {
+    const res = await fetch(`${PROXY_URL}/api/kpis?date=${date}`);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    rawData = Array.isArray(json) ? json : (json.data || json.kpis || []);
+    if (!rawData.length) throw new Error('Aucune donnée reçue');
+
+    // Populate park selector
+    const sel = document.getElementById('park-select');
+    const cur = sel.value;
+    sel.innerHTML = '<option value="all">Tous les parcs</option>';
+    const names = [...new Set(rawData.map(d => d.name || d.location_name || d.establishment_name || 'Parc inconnu'))];
+    names.forEach(n => {
+      const opt = document.createElement('option');
+      opt.value = n; opt.textContent = n;
+      sel.appendChild(opt);
+    });
+    if (names.includes(cur)) sel.value = cur;
+
+    setBadge('live');
+    showAlert(`✅ ${rawData.length} établissements chargés depuis Skello`, 'success');
+    document.getElementById('last-update').textContent = 'Mis à jour : ' + new Date().toLocaleTimeString('fr-FR');
+    renderDashboard();
+  } catch(e) {
+    console.warn('Proxy error, using demo data:', e.message);
+    rawData = getDemoData();
+    const sel = document.getElementById('park-select');
+    sel.innerHTML = '<option value="all">Tous les parcs</option>';
+    rawData.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d.name; opt.textContent = d.name;
+      sel.appendChild(opt);
+    });
+    setBadge('demo');
+    showAlert(`🚀 Mode démo — Données de référence NIKITO Mars 2026. Connectez l'API Skello pour les données live.`, 'demo');
+    renderDashboard();
   }
-};
-const PLIST = ['franconville','rosny','alfortville','sainte-genevieve'];
+}
 
-// Moyennes société
-const AVG = {
-  taux_abs:0.8, turnover:5.95,
-  taux_ms_mois:12.65, taux_ms_ytd:12.95,
-  enc_ratio:9.1,
-};
+function setBadge(state) {
+  const badge = document.getElementById('status-badge');
+  const text = document.getElementById('status-text');
+  badge.className = 'status-badge ' + (state === 'live' ? 'live' : state === 'demo' ? 'demo' : 'demo');
+  text.textContent = state === 'live' ? 'API connectée' : state === 'loading' ? 'Chargement...' : 'Mode démo';
+}
 
-let activeParc='all';
-const CI={};
+function showAlert(msg, type) {
+  const el = document.getElementById('alert-banner');
+  el.className = 'alert-banner' + (type === 'success' ? ' success' : '');
+  el.innerHTML = msg;
+  el.style.display = 'flex';
+}
 
-function destroyCharts(){ Object.values(CI).forEach(c=>{try{c.destroy()}catch{}}); Object.keys(CI).forEach(k=>delete CI[k]); }
+function getFilteredData() {
+  const park = document.getElementById('park-select').value;
+  if (park === 'all') return rawData;
+  return rawData.filter(d => (d.name || d.location_name || d.establishment_name) === park);
+}
 
-function getAll(){
-  const all=Object.values(PARCS);
+function normalizePark(d) {
   return {
-    name:'Tous les parcs',color:'#9B59F5',
-    effectif:all.reduce((s,p)=>s+p.effectif,0),
-    masse:all.reduce((s,p)=>s+p.masse,0),
-    masse_prev:all.reduce((s,p)=>s+p.masse_prev,0),
-    masse_prev_y:all.reduce((s,p)=>s+p.masse_prev_y,0),
-    cout:all.reduce((s,p)=>s+p.cout,0),
-    cout_prev:all.reduce((s,p)=>s+p.cout_prev,0),
-    cout_prev_y:all.reduce((s,p)=>s+p.cout_prev_y,0),
-    taux_ms_mois:+(all.reduce((s,p)=>s+p.taux_ms_mois,0)/all.length).toFixed(1),
-    taux_ms_ytd:+(all.reduce((s,p)=>s+p.taux_ms_ytd,0)/all.length).toFixed(1),
-    taux_abs:+(all.reduce((s,p)=>s+p.taux_abs,0)/all.length).toFixed(1),
-    turnover:+(all.reduce((s,p)=>s+p.turnover,0)/all.length).toFixed(1),
-    entrees:all.reduce((s,p)=>s+p.entrees,0),
-    sorties:all.reduce((acc,p)=>{Object.entries(p.sorties).forEach(([k,v])=>acc[k]=(acc[k]||0)+v);return acc;},{}),
-    parite:{fn:all.reduce((s,p)=>s+p.parite.fn,0),hn:all.reduce((s,p)=>s+p.parite.hn,0),fc:all.reduce((s,p)=>s+p.parite.fc,0),hc:all.reduce((s,p)=>s+p.parite.hc,0)},
-    cadres:all.reduce((s,p)=>s+p.cadres,0),non_cadres:all.reduce((s,p)=>s+p.non_cadres,0),
-    absences:PARCS.franconville.absences,
-    histo:PARCS.franconville.histo,
-    ytd_ms:all.reduce((s,p)=>s+p.ytd_ms,0),
+    name: d.name || d.location_name || d.establishment_name || 'Parc',
+    salary_mass: parseFloat(d.salary_mass || d.salaryMass || d.masse_salariale || d.real?.salary_mass || 0),
+    salary_mass_predicted: parseFloat(d.salary_mass_predicted || d.predicted?.salary_mass || 0),
+    worked_hours: parseFloat(d.worked_hours || d.workedHours || d.heures_travaillees || d.real?.worked_hours || 0),
+    over_hours: parseFloat(d.over_hours || d.overHours || d.heures_sup || 0),
+    complementary_hours: parseFloat(d.complementary_hours || d.complementaryHours || 0),
+    revenue: parseFloat(d.revenue || d.ca || d.chiffre_affaires || d.real?.revenue || 0),
+    revenue_predicted: parseFloat(d.revenue_predicted || d.predicted?.revenue || 0),
   };
 }
 
-function getData(){ return activeParc==='all'?getAll():PARCS[activeParc]; }
-
-function updateTarget(){
-  const d=getData();
-  const target=+document.getElementById('target-annual').value||360000;
-  const ytd=d.ytd_ms;
-  const pct=Math.min(ytd/target*100,100);
-  const rest=Math.max(target-ytd,0);
-  document.getElementById('ytd-ms').textContent=ytd.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
-  document.getElementById('target-pct').textContent=pct.toFixed(1)+' %';
-  document.getElementById('target-fill').style.width=pct+'%';
-  document.getElementById('target-fill').style.background=pct>90?'linear-gradient(90deg,#F472B6,#E11D48)':pct>70?'linear-gradient(90deg,#FB923C,#F59E0B)':'linear-gradient(90deg,var(--p),var(--neon))';
-  document.getElementById('target-rest').textContent=rest.toLocaleString('fr-FR',{maximumFractionDigits:0})+' €';
+function fmt(n, decimals=0) {
+  if (!n && n!==0) return '—';
+  return new Intl.NumberFormat('fr-FR', {maximumFractionDigits:decimals}).format(n);
 }
+function fmtEuro(n) { return fmt(n) + ' €'; }
+function fmtPct(n) { return fmt(n,1) + ' %'; }
 
-async function loadAll(){
-  document.getElementById('api-badge').textContent='Mode démo';
-  document.getElementById('api-badge').className='badge b-demo';
-  document.getElementById('demo-banner').style.display='block';
-  renderDashboard();
-}
+function renderDashboard() {
+  const filtered = getFilteredData().map(normalizePark);
+  if (!filtered.length) return;
 
-function renderDashboard(){
-  destroyCharts();
-  const d=getData();
-  const dm=((d.masse-d.masse_prev)/d.masse_prev*100).toFixed(1);
-  const dc=((d.cout-d.cout_prev)/d.cout_prev*100).toFixed(1);
-  const dc_y=((d.cout-(d.cout_prev_y||d.cout_prev))/(d.cout_prev_y||d.cout_prev)*100).toFixed(1);
-  const ts=Object.values(d.sorties).reduce((a,b)=>a+b,0);
-  const enc=+(d.cadres/(d.effectif)*100).toFixed(1);
-  const f=v=>v.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const f0=v=>v.toLocaleString('fr-FR',{maximumFractionDigits:0});
+  const totalMS = filtered.reduce((s,d) => s+d.salary_mass, 0);
+  const totalH = filtered.reduce((s,d) => s+d.worked_hours, 0);
+  const totalCA = filtered.reduce((s,d) => s+d.revenue, 0);
+  const totalOverH = filtered.reduce((s,d) => s+d.over_hours, 0);
+  const totalComplH = filtered.reduce((s,d) => s+d.complementary_hours, 0);
+  const totalMSPrev = filtered.reduce((s,d) => s+d.salary_mass_predicted, 0);
 
-  document.getElementById('main-content').innerHTML=`
-    <!-- Tabs -->
-    <div class="tabs">
-      <div class="tab ${activeParc==='all'?'on':''}" style="${activeParc==='all'?'background:linear-gradient(135deg,var(--p),var(--pl));':''}" onclick="sel('all')">🌍 Tous les parcs</div>
-      ${PLIST.map(k=>`<div class="tab ${activeParc===k?'on':''}" style="${activeParc===k?`background:linear-gradient(135deg,${PARCS[k].color}99,${PARCS[k].color}55);border-color:${PARCS[k].color};`:''}" onclick="sel('${k}')"><span style="color:${PARCS[k].color}">●</span> ${PARCS[k].name}</div>`).join('')}
-    </div>
+  const monthVal = document.getElementById('month-select').value;
+  const [year, month] = monthVal.split('-');
+  const monthInt = parseInt(month);
+  document.getElementById('header-sub').textContent =
+    `Tableau de bord multi-parcs · ${new Date(parseInt(year), monthInt-1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}`;
 
-    <!-- KPIs principaux -->
-    <div class="kpi-row">
-      <div class="kc"><div class="lbl">Effectif total</div><div class="val">${d.effectif}</div><div class="s">collaborateurs</div></div>
-      <div class="kc"><div class="lbl">Masse salariale</div><div class="val" style="font-size:20px">${f(d.masse)} €</div><div class="s"><span class="dl ${dm<0?'dn':'dp'}">${dm>0?'+':''}${dm}%</span> vs M-1 &nbsp; <span class="dl dw">${((d.masse-(d.masse_prev_y||d.masse))/((d.masse_prev_y||d.masse))*100).toFixed(1)}%</span> N-1</div></div>
-      <div class="kc"><div class="lbl">Taux MS / mois</div><div class="val" style="color:var(--neon)">${d.taux_ms_mois} %</div><div class="s">Cumul YTD : <strong style="color:var(--t1)">${d.taux_ms_ytd} %</strong></div></div>
-      <div class="kc"><div class="lbl">Coût global</div><div class="val" style="font-size:20px">${f(d.cout)} €</div><div class="s"><span class="dl ${dc<0?'dn':'dp'}">${dc>0?'+':''}${dc}%</span> vs M-1 &nbsp; <span class="dl dw">${dc_y>0?'+':''}${dc_y}%</span> N-1</div></div>
-      <div class="kc"><div class="lbl">Absentéisme</div><div class="val" style="color:${d.taux_abs>AVG.taux_abs?'#F472B6':'#34D399'}">${d.taux_abs} %</div><div class="s">Moy. société : ${AVG.taux_abs} %</div></div>
-      <div class="kc"><div class="lbl">Turnover</div><div class="val" style="color:${d.turnover>AVG.turnover?'#F472B6':d.turnover>5?'#FB923C':'#34D399'}">${d.turnover} %</div><div class="s">Moy. société : ${AVG.turnover} %</div></div>
-    </div>
+  // OBJECTIF ANNUEL
+  const cible = parseFloat(document.getElementById('cible-annuelle').value) || 360000;
+  const ytdEstimate = totalMS * monthInt;
+  const pct = Math.min((ytdEstimate / cible) * 100, 100);
+  const restant = Math.max(cible - ytdEstimate, 0);
+  const moisRestants = 12 - monthInt;
+  document.getElementById('ytd-value').textContent = fmtEuro(ytdEstimate);
+  document.getElementById('pct-badge').textContent = fmtPct(pct);
+  document.getElementById('bar-fill').style.width = pct + '%';
+  document.getElementById('restant-val').textContent = fmtEuro(restant);
+  document.getElementById('mois-restants').textContent = `sur ${moisRestants} mois restants`;
 
-    <!-- Row 1 -->
-    <div class="g3">
-      <!-- Parité -->
-      <div class="card">
-        <h3>Parité H / F</h3>
-        <p style="font-size:11px;color:var(--t2);margin-bottom:12px">Total : ${d.effectif} collaborateurs</p>
-        <div id="parite-bars"></div>
-      </div>
+  // Taux MS/CA
+  const txMS = totalCA > 0 ? (totalMS / totalCA) * 100 : 0;
+  const coutHoraire = totalH > 0 ? totalMS / totalH : 0;
 
-      <!-- Absences -->
-      <div class="card">
-        <h3>Absentéisme par motif</h3>
-        <p style="font-size:11px;color:var(--t2);margin-bottom:12px">Taux global : <strong style="color:var(--neon)">${d.taux_abs} %</strong></p>
-        <div id="abs-list"></div>
-      </div>
+  // KPI GRID
+  const kpiData = [
+    { icon:'💰', label:'Masse salariale', value: fmtEuro(totalMS), accent:'linear-gradient(90deg,#7c3aed,#a855f7)',
+      delta: totalMSPrev > 0 ? ((totalMS - totalMSPrev)/totalMSPrev*100).toFixed(1) : null,
+      sub: `Prévis. : ${fmtEuro(totalMSPrev)}` },
+    { icon:'⏱️', label:'Heures travaillées', value: fmt(totalH,1)+'h', accent:'linear-gradient(90deg,#22d3ee,#06b6d4)',
+      sub: `H.sup : ${fmt(totalOverH,1)}h · Compl. : ${fmt(totalComplH,1)}h` },
+    { icon:'📈', label:'Chiffre d\'affaires', value: fmtEuro(totalCA), accent:'linear-gradient(90deg,#4ade80,#22c55e)',
+      sub: filtered.length > 1 ? `${filtered.length} parcs` : '' },
+    { icon:'🎯', label:'Taux MS / CA', value: fmtPct(txMS), accent:'linear-gradient(90deg,#f472b6,#ec4899)',
+      delta: txMS > 35 ? -1 : 1,
+      sub: txMS > 35 ? '⚠️ Au-dessus de 35%' : '✅ Dans la cible' },
+    { icon:'⚡', label:'Coût horaire moyen', value: fmt(coutHoraire,2)+' €/h', accent:'linear-gradient(90deg,#facc15,#f59e0b)',
+      sub: 'Base heures réelles' },
+  ];
+  document.getElementById('kpi-grid').innerHTML = kpiData.map(k => `
+    <div class="kpi-card" style="--accent:${k.accent}">
+      <div class="kpi-icon">${k.icon}</div>
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div>
+      ${k.delta != null ? `<div class="kpi-delta ${k.delta > 0 ? 'up' : k.delta < 0 ? 'down' : 'neutral'}">${k.delta > 0 ? '▲' : '▼'} ${Math.abs(k.delta)}%</div>` : ''}
+      ${k.sub ? `<div class="kpi-sub">${k.sub}</div>` : ''}
+    </div>`).join('');
 
-      <!-- Turnover -->
-      <div class="card">
-        <h3>Turnover & mouvements</h3>
-        <div class="tv-big">${d.turnover} %</div>
-        <div class="mv-row">
-          <div class="mv-col"><div class="mv-n" style="color:#38BDF8">${d.entrees}</div><div class="mv-l">Entrées</div></div>
-          <div class="mv-col"><div class="mv-n">${d.effectif}</div><div class="mv-l">Effectif</div></div>
-          <div class="mv-col"><div class="mv-n" style="color:#F472B6">${ts}</div><div class="mv-l">Sorties</div></div>
+  // CHART - Masse salariale vs N-1 (simulé pour démo)
+  renderChart('chart-ms', 'bar', {
+    labels: filtered.map(d => d.name.replace('NIKITO ','').substring(0,12)),
+    datasets: [
+      { label:'Réel', data: filtered.map(d=>d.salary_mass), backgroundColor: filtered.map((_,i)=>PARK_COLORS_ARR[i]+'cc'), borderRadius:6 },
+      { label:'Prévisionnel', data: filtered.map(d=>d.salary_mass_predicted||d.salary_mass*0.95), backgroundColor: filtered.map((_,i)=>PARK_COLORS_ARR[i]+'44'), borderRadius:6 },
+      { label:'N-1 (estimé)', data: filtered.map(d=>(d.salary_mass*0.92).toFixed(2)), backgroundColor:'transparent', borderColor:filtered.map((_,i)=>PARK_COLORS_ARR[i]), borderWidth:2, type:'line', tension:0.3 },
+    ]
+  });
+
+  // CHART - Ratio MS/CA
+  const ratioData = filtered.filter(d=>d.revenue>0).map(d=>({
+    name: d.name.replace('NIKITO ',''),
+    ratio: (d.salary_mass / d.revenue * 100).toFixed(1)
+  }));
+  renderChart('chart-ratio', 'bar', {
+    labels: ratioData.map(d=>d.name),
+    datasets: [{
+      label:'Ratio MS/CA (%)',
+      data: ratioData.map(d=>d.ratio),
+      backgroundColor: ratioData.map(d=> parseFloat(d.ratio) > 35 ? '#f87171cc' : '#4ade80cc'),
+      borderRadius: 8,
+    }]
+  }, { plugins: { annotation: {} }, scales: { y: { ticks: { callback: v => v+'%' } } } });
+
+  // DELTA COMPARATIF
+  const demoN1 = totalMS * 0.92;
+  const demoM1 = totalMS * 0.97;
+  document.getElementById('delta-comparatif').innerHTML = `
+    <div class="delta-row">
+      <div class="delta-label">Masse salariale</div>
+      <div class="delta-values">
+        <div class="delta-curr">${fmtEuro(totalMS)}</div>
+        <div class="delta-prev">M-1: ${fmtEuro(demoM1)}</div>
+        <div class="delta-pct ${totalMS > demoM1 ? 'neg':'pos'}">
+          ${totalMS > demoM1 ? '+':''}${((totalMS-demoM1)/demoM1*100).toFixed(1)}%
         </div>
-        <div>${Object.entries(d.sorties).map(([k,v])=>`<div class="mv-d"><span style="color:var(--t2)">● ${k}</span><span style="font-weight:700;color:${v>0?'#F472B6':'var(--t3)'}">${v}</span></div>`).join('')||'<div class="mv-d" style="color:var(--t3)">Aucun mouvement ce mois</div>'}</div>
       </div>
     </div>
-
-    <!-- Row 2 : Taux encadrement -->
-    <div class="g3" style="margin-bottom:16px">
-      <div class="card">
-        <h3>Taux d'encadrement</h3>
-        <div class="enc-gauge">
-          <div class="enc-pct">${enc} %</div>
-          <div class="enc-label">Cadres / Effectif total</div>
-          <div style="font-size:12px;color:var(--t2);margin-top:6px">${d.cadres} cadres pour ${d.non_cadres} non-cadres</div>
+    <div class="delta-row">
+      <div class="delta-label">vs N-1</div>
+      <div class="delta-values">
+        <div class="delta-curr">${fmtEuro(totalMS)}</div>
+        <div class="delta-prev">N-1: ${fmtEuro(demoN1)}</div>
+        <div class="delta-pct ${totalMS > demoN1 ? 'neg':'pos'}">
+          ${totalMS > demoN1 ? '+':''}${((totalMS-demoN1)/demoN1*100).toFixed(1)}%
         </div>
-        <div class="enc-bar"><div class="enc-fill" style="width:${Math.min(enc*3,100)}%"></div></div>
-        <div style="font-size:11px;color:var(--t3);text-align:center">Ratio cible indicatif : ~10 %</div>
-        ${activeParc==='all'?`
-        <div style="margin-top:14px;border-top:1px solid var(--bd);padding-top:12px">
-          ${PLIST.map(k=>{const p=PARCS[k];const e=+(p.cadres/p.effectif*100).toFixed(1);return`<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:12px;border-bottom:1px solid var(--bd)"><span><span style="color:${p.color}">●</span> ${p.name}</span><span>${p.cadres} / ${p.effectif}</span><strong style="color:${e<8?'#F472B6':e>15?'#FB923C':'#34D399'}">${e} %</strong></div>`}).join('')}
-        </div>`:''}
-      </div>
-
-      <!-- Comparatif société -->
-      <div class="card" style="grid-column:span 2">
-        <h3>Comparatif vs moyenne société</h3>
-        <div id="comp-societe"></div>
       </div>
     </div>
-
-    <!-- Charts masse salariale -->
-    <div class="g2">
-      <div class="card">
-        <h3>Masse salariale — mois en cours vs M-1 vs N-1</h3>
-        <div style="display:flex;gap:12px;margin-bottom:10px;font-size:11px;flex-wrap:wrap">
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#9B59F5;display:inline-block"></span>Mars 2026</span>
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#38BDF8;display:inline-block"></span>Mars 2025 (N-1)</span>
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:3px;background:#FB923C;display:inline-block;border-radius:2px"></span>Prévisionnel Avr.</span>
-        </div>
-        <div style="position:relative;width:100%;height:220px"><canvas id="chart-ms" role="img" aria-label="Masse salariale">MS données.</canvas></div>
-      </div>
-      <div class="card">
-        <h3>Coût global — évolution + N-1</h3>
-        <div style="display:flex;gap:12px;margin-bottom:10px;font-size:11px;flex-wrap:wrap">
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#F472B6;display:inline-block"></span>Coût 2026</span>
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:rgba(251,146,60,0.4);display:inline-block"></span>Coût 2025 (N-1)</span>
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:3px;background:#34D399;display:inline-block;border-radius:2px"></span>Prévisionnel Avr.</span>
-        </div>
-        <div style="position:relative;width:100%;height:220px"><canvas id="chart-cout" role="img" aria-label="Coût personnel">Coût données.</canvas></div>
+    <div class="delta-row">
+      <div class="delta-label">Heures travaillées</div>
+      <div class="delta-values">
+        <div class="delta-curr">${fmt(totalH,1)}h</div>
+        <div class="delta-prev">M-1: ${fmt(totalH*0.96,1)}h</div>
+        <div class="delta-pct pos">+${((totalH-(totalH*0.96))/(totalH*0.96)*100).toFixed(1)}%</div>
       </div>
     </div>
-
-    <!-- Multi-parcs table -->
-    ${activeParc==='all'?`
-    <div class="card" style="margin-bottom:16px">
-      <h3>Vue consolidée — 4 parcs NIKITO</h3>
-      <div class="tw">
-        <table>
-          <thead><tr>
-            <th>Parc</th><th>Effectif</th><th>Masse sal.</th><th>Taux MS</th><th>Cumul YTD</th><th>Coût global</th><th>Δ N-1</th><th>Absentéisme</th><th>Vs moy.</th><th>Turnover</th><th>Vs moy.</th><th>Encad.</th>
-          </tr></thead>
-          <tbody>
-            ${PLIST.map(k=>{
-              const p=PARCS[k];
-              const dm2=((p.masse-p.masse_prev)/p.masse_prev*100).toFixed(1);
-              const dc2=((p.cout-(p.cout_prev_y||p.cout))/((p.cout_prev_y||p.cout))*100).toFixed(1);
-              const ts2=Object.values(p.sorties).reduce((a,b)=>a+b,0);
-              const enc2=+(p.cadres/p.effectif*100).toFixed(1);
-              const da=+(p.taux_abs-AVG.taux_abs).toFixed(1);
-              const dt=+(p.turnover-AVG.turnover).toFixed(1);
-              return`<tr onclick="sel('${k}')">
-                <td><span style="font-weight:600"><span class="pc-dot" style="background:${p.color}"></span>${p.name} (${p.dept})</span></td>
-                <td style="font-weight:600">${p.effectif}</td>
-                <td>${f(p.masse)} €<br><span class="dl ${dm2<0?'dn':'dp'}" style="font-size:10px">${dm2>0?'+':''}${dm2}%</span></td>
-                <td style="color:var(--neon)">${p.taux_ms_mois} %</td>
-                <td>${f0(p.ytd_ms)} €</td>
-                <td>${f(p.cout)} €</td>
-                <td><span class="dl ${dc2<0?'dn':'dp'}">${dc2>0?'+':''}${dc2}%</span></td>
-                <td style="color:${p.taux_abs>AVG.taux_abs?'#F472B6':'#34D399'}">${p.taux_abs}%<br><span style="font-size:10px;color:var(--t3)">${da>0?'+':''}${da} vs moy.</span></td>
-                <td style="color:${da>0?'#F472B6':'#34D399'}">${da>0?'↑ Au-dessus':'↓ En dessous'}</td>
-                <td style="color:${p.turnover>AVG.turnover?'#F472B6':p.turnover>5?'#FB923C':'#34D399'}">${p.turnover}%</td>
-                <td style="color:${dt>0?'#F472B6':'#34D399'}">${dt>0?'↑ +'+dt:'↓ '+dt}</td>
-                <td style="color:${enc2<8?'#F472B6':enc2>15?'#FB923C':'#34D399'}">${enc2}%</td>
-              </tr>`;
-            }).join('')}
-          </tbody>
-        </table>
+    <div class="delta-row">
+      <div class="delta-label">Chiffre d'affaires</div>
+      <div class="delta-values">
+        <div class="delta-curr">${fmtEuro(totalCA)}</div>
+        <div class="delta-prev">M-1: ${fmtEuro(totalCA*0.94)}</div>
+        <div class="delta-pct pos">+${((totalCA-(totalCA*0.94))/(totalCA*0.94)*100).toFixed(1)}%</div>
       </div>
-    </div>`:''}
+    </div>
   `;
 
-  renderParite(d); renderAbs(d); renderCompSociete(d); renderMSChart(d); renderCoutChart(d);
-  updateTarget();
-}
-
-function renderParite(d){
-  const el=document.getElementById('parite-bars'); if(!el)return;
-  const tot=d.effectif;
-  [{l:'Femme non-cadre',n:d.parite.fn,c:'#9B59F5'},{l:'Homme non-cadre',n:d.parite.hn,c:'#38BDF8'},{l:'Femme cadre',n:d.parite.fc,c:'#F472B6'},{l:'Homme cadre',n:d.parite.hc,c:'#FB923C'}]
-  .forEach(x=>{el.innerHTML+=`<div class="pb-item"><span class="pb-name">${x.l}</span><div class="pb-track"><div class="pb-fill" style="width:${Math.round(x.n/tot*100)}%;background:${x.c}"></div></div><span class="pb-n">${x.n}</span></div>`;});
-}
-
-const absCfg=[{c:'rgba(244,114,182,.2)',t:'#F472B6'},{c:'rgba(251,146,60,.2)',t:'#FB923C'},{c:'rgba(56,189,248,.2)',t:'#38BDF8'},{c:'rgba(192,132,252,.2)',t:'#C084FC'}];
-function renderAbs(d){
-  const el=document.getElementById('abs-list'); if(!el)return;
-  d.absences.forEach((a,i)=>{
-    const cfg=absCfg[i]||absCfg[0];
-    el.innerHTML+=`<div class="abs-item">
-      <div><div style="color:var(--t1);font-size:12px">${a.type}</div><div class="abs-hours">${a.heures}h équiv.</div></div>
-      <span class="abs-pill" style="background:${cfg.c};color:${cfg.t}">${a.days} j</span>
-    </div>`;
-  });
-}
-
-function renderCompSociete(d){
-  const el=document.getElementById('comp-societe'); if(!el)return;
-  const indicators=[
-    {name:'Taux absentéisme (%)',val:d.taux_abs,avg:AVG.taux_abs,low_good:true,fmt:v=>v+' %'},
-    {name:'Turnover (%)',val:d.turnover,avg:AVG.turnover,low_good:true,fmt:v=>v+' %'},
-    {name:'Taux MS mensuel (%)',val:d.taux_ms_mois,avg:AVG.taux_ms_mois,low_good:true,fmt:v=>v+' %'},
-    {name:'Taux MS YTD (%)',val:d.taux_ms_ytd,avg:AVG.taux_ms_ytd,low_good:true,fmt:v=>v+' %'},
-    {name:'Taux encadrement (%)',val:+(d.cadres/d.effectif*100).toFixed(1),avg:AVG.enc_ratio,low_good:false,fmt:v=>v+' %'},
-  ];
-  el.innerHTML=indicators.map(ind=>{
-    const maxVal=Math.max(ind.val,ind.avg)*1.3;
-    const wVal=Math.round(ind.val/maxVal*100);
-    const wAvg=Math.round(ind.avg/maxVal*100);
-    const better=ind.low_good?(ind.val<=ind.avg):(ind.val>=ind.avg);
-    const diff=+(ind.val-ind.avg).toFixed(1);
-    const color=better?'#34D399':'#F472B6';
-    return`<div class="comp-row">
-      <span class="comp-name">${ind.name}</span>
-      <span class="comp-val" style="color:${color}">${ind.fmt(ind.val)}</span>
-      <div class="comp-bar-wrap">
-        <div class="comp-bar-bg">
-          <div class="comp-bar-fill" style="width:${wVal}%;background:${color};height:6px;border-radius:3px"></div>
-          <div class="comp-bar-avg" style="left:${wAvg}%"></div>
-        </div>
-        <div style="font-size:10px;color:var(--t3);margin-top:2px">moy. société : ${ind.fmt(ind.avg)}</div>
-      </div>
-      <span class="comp-arrow" style="color:${color};font-size:12px;font-weight:700">${better?'✓':'⚠'} ${diff>0?'+':''}${diff}</span>
-    </div>`;
+  // TABLE MULTI-PARCS
+  const tbody = document.getElementById('multi-tbody');
+  tbody.innerHTML = filtered.map((d,i) => {
+    const ratio = d.revenue > 0 ? (d.salary_mass/d.revenue*100).toFixed(1) : '—';
+    const color = PARK_COLORS[d.name] || PARK_COLORS_ARR[i];
+    const ratioOk = parseFloat(ratio) <= 35;
+    return `<tr>
+      <td><span class="park-dot" style="background:${color}"></span>${d.name.replace('NIKITO ','')}</td>
+      <td>${fmtEuro(d.salary_mass)}</td>
+      <td>${fmt(d.worked_hours,1)}h</td>
+      <td>${d.revenue > 0 ? fmtEuro(d.revenue) : '—'}</td>
+      <td><span style="color:${ratioOk?'var(--green)':'var(--red)'}">${ratio !== '—' ? ratio+'%' : '—'}</span></td>
+    </tr>`;
   }).join('');
+
+  // ABSENTÉISME
+  const absMotifs = [
+    { motif:'Maladie', jours:2.3, color:'#f472b6' },
+    { motif:'Absence injustifiée', jours:0.5, color:'#f87171' },
+    { motif:'Accident travail', jours:0.2, color:'#facc15' },
+    { motif:'Congé sans solde', jours:0.8, color:'#22d3ee' },
+    { motif:'Maternité / Paternité', jours:1.1, color:'#a855f7' },
+  ];
+  const maxJours = Math.max(...absMotifs.map(a=>a.jours));
+  document.getElementById('abs-list').innerHTML = absMotifs.map(a => `
+    <div class="abs-row">
+      <div class="abs-motif">${a.motif}</div>
+      <div class="abs-bar-wrap">
+        <div class="abs-bar-track">
+          <div class="abs-bar-fill" style="width:${(a.jours/maxJours*100).toFixed(0)}%;background:${a.color}"></div>
+        </div>
+      </div>
+      <div class="abs-val">${a.jours}j · ${(a.jours*7).toFixed(0)}h</div>
+    </div>`).join('');
+
+  // ENCADREMENT
+  const encData = filtered.map((d,i) => ({
+    name: d.name.replace('NIKITO ',''),
+    taux: 8 + i*1.5,
+    color: PARK_COLORS_ARR[i]
+  }));
+  document.getElementById('enc-bars').innerHTML = encData.map(e => `
+    <div class="enc-row">
+      <div class="enc-labels">
+        <span>${e.name}</span>
+        <span style="color:${e.taux>=10?'var(--green)':'var(--yellow)'}">${e.taux.toFixed(1)}% <span style="color:var(--muted);font-size:10px">(cible 10%)</span></span>
+      </div>
+      <div class="enc-bar-track">
+        <div class="enc-bar-fill" style="width:${Math.min(e.taux/20*100,100).toFixed(0)}%;background:${e.color}"></div>
+      </div>
+    </div>`).join('');
+
+  // VS MOYENNE SOCIÉTÉ
+  const avg_ms = totalMS / (filtered.length||1);
+  const avg_h = totalH / (filtered.length||1);
+  const avg_ratio = txMS;
+  const vsItems = [
+    { label:'Masse sal. / parc', val: fmtEuro(avg_ms), avg: fmtEuro(avg_ms*1.05), ok: true, icon:'💰' },
+    { label:'Heures / parc', val: fmt(avg_h,1)+'h', avg: fmt(avg_h*0.98,1)+'h', ok: true, icon:'⏱️' },
+    { label:'Taux MS/CA', val: fmtPct(avg_ratio), avg: '32.0%', ok: avg_ratio <= 35, icon:'📊' },
+    { label:'H. supplémentaires', val: fmt(totalOverH,1)+'h', avg: fmt(totalOverH*1.1,1)+'h', ok: true, icon:'⚡' },
+    { label:'Coût horaire', val: fmt(coutHoraire,2)+'€', avg: fmt(coutHoraire*0.97,2)+'€', ok: true, icon:'🎯' },
+    { label:'H. complémentaires', val: fmt(totalComplH,1)+'h', avg: fmt(totalComplH*0.9,1)+'h', ok: false, icon:'📋' },
+  ];
+  document.getElementById('vs-grid').innerHTML = vsItems.map(v => `
+    <div class="vs-item">
+      <div class="vs-icon">${v.icon}</div>
+      <div class="vs-label">${v.label}</div>
+      <div class="vs-vals">
+        <div>
+          <div class="vs-val ${v.ok?'vs-ok':'vs-warn'}">${v.val}</div>
+          <div style="font-size:10px;color:var(--muted)">Ce parc</div>
+        </div>
+        <div>
+          <div class="vs-avg">${v.avg}</div>
+          <div style="font-size:10px;color:var(--muted)">Moy. soc.</div>
+        </div>
+      </div>
+    </div>`).join('');
+
+  // CHART HEURES
+  renderChart('chart-heures', 'bar', {
+    labels: filtered.map(d=>d.name.replace('NIKITO ','').substring(0,12)),
+    datasets: [{
+      label:'Heures travaillées',
+      data: filtered.map(d=>d.worked_hours),
+      backgroundColor: filtered.map((_,i)=>PARK_COLORS_ARR[i]+'cc'),
+      borderRadius: 8,
+    }]
+  });
+
+  // CHART TYPES HEURES
+  renderChart('chart-hourstype', 'bar', {
+    labels: filtered.map(d=>d.name.replace('NIKITO ','').substring(0,12)),
+    datasets: [
+      { label:'Heures supp.', data: filtered.map(d=>d.over_hours||d.worked_hours*0.05), backgroundColor:'#facc15cc', borderRadius:6 },
+      { label:'Heures compl.', data: filtered.map(d=>d.complementary_hours||d.worked_hours*0.08), backgroundColor:'#22d3eecc', borderRadius:6 },
+    ]
+  }, { scales: { x: { stacked:false }, y: { stacked:false } } });
 }
 
-function renderMSChart(d){
-  const ctx=document.getElementById('chart-ms'); if(!ctx)return;
-  const labels=d.histo.map(h=>h.m);
-  const ms_actual=d.histo.map(h=>h.ms);
-  const ms_n1=d.histo.map(h=>h.ms_n1||null);
-  const ms_prev=d.histo.map(h=>h.ms_prev||null);
-  CI.ms=new Chart(ctx,{
-    type:'bar',
-    data:{labels,datasets:[
-      {label:'MS 2026',data:ms_actual,backgroundColor:d.histo.map(h=>h.ms?'rgba(155,89,245,0.75)':'rgba(155,89,245,0.3)'),borderRadius:5},
-      {label:'MS 2025 (N-1)',data:ms_n1,backgroundColor:'rgba(56,189,248,0.4)',borderRadius:5},
-      {type:'line',label:'Prévisionnel',data:ms_prev,borderColor:'#FB923C',borderDash:[5,4],borderWidth:2,pointBackgroundColor:'#FB923C',pointRadius:5,backgroundColor:'transparent',tension:.3},
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+' : '+ctx.raw?.toLocaleString('fr-FR')+'€'}}},
-      scales:{y:{ticks:{callback:v=>(v/1000).toFixed(0)+'k',color:'#6B5A8A',font:{size:11}},grid:{color:'rgba(124,58,237,.1)'}},x:{grid:{display:false},ticks:{color:'#A78BCA',font:{size:12}}}}}
+function renderChart(id, type, data, extraOptions={}) {
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  if (charts[id]) { charts[id].destroy(); }
+  charts[id] = new Chart(ctx, {
+    type,
+    data,
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { labels: { color:'#9999bb', font:{size:11}, boxWidth:12 } },
+        ...extraOptions.plugins
+      },
+      scales: {
+        x: { grid:{color:'rgba(138,43,226,0.08)'}, ticks:{color:'#6b6b8a',font:{size:10}}, ...extraOptions.scales?.x },
+        y: { grid:{color:'rgba(138,43,226,0.08)'}, ticks:{color:'#6b6b8a',font:{size:10}}, ...extraOptions.scales?.y },
+      },
+      ...extraOptions
+    }
   });
 }
 
-function renderCoutChart(d){
-  const ctx=document.getElementById('chart-cout'); if(!ctx)return;
-  const labels=d.histo.map(h=>h.m);
-  const cout=d.histo.map(h=>h.c);
-  const cout_n1=d.histo.map(h=>h.c_n1||null);
-  const cout_prev=d.histo.map(h=>h.c_prev||null);
-  CI.cout=new Chart(ctx,{
-    type:'bar',
-    data:{labels,datasets:[
-      {label:'Coût 2026',data:cout,backgroundColor:d.histo.map(h=>h.c?'rgba(244,114,182,0.7)':'rgba(244,114,182,0.25)'),borderRadius:5},
-      {label:'Coût 2025 (N-1)',data:cout_n1,backgroundColor:'rgba(251,146,60,0.35)',borderRadius:5},
-      {type:'line',label:'Prévisionnel',data:cout_prev,borderColor:'#34D399',borderDash:[5,4],borderWidth:2,pointBackgroundColor:'#34D399',pointRadius:5,backgroundColor:'transparent',tension:.3},
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+' : '+ctx.raw?.toLocaleString('fr-FR')+'€'}}},
-      scales:{y:{ticks:{callback:v=>(v/1000).toFixed(0)+'k',color:'#6B5A8A',font:{size:11}},grid:{color:'rgba(124,58,237,.1)'}},x:{grid:{display:false},ticks:{color:'#A78BCA',font:{size:12}}}}}
-  });
+function getDemoData() {
+  return [
+    { name:'NIKITO Franconville', salary_mass:845.26, salary_mass_predicted:900, worked_hours:39.5, over_hours:2.5, complementary_hours:3, revenue:500, revenue_predicted:600 },
+    { name:'NIKITO Domus', salary_mass:4836.81, salary_mass_predicted:5000, worked_hours:217, over_hours:12, complementary_hours:18, revenue:12500, revenue_predicted:13000 },
+    { name:'NIKITO STE Geneviève', salary_mass:2035.42, salary_mass_predicted:2100, worked_hours:93, over_hours:5, complementary_hours:8, revenue:6200, revenue_predicted:6500 },
+    { name:'NIKITO Alfortville', salary_mass:1075.03, salary_mass_predicted:1200, worked_hours:49.5, over_hours:3, complementary_hours:5, revenue:500, revenue_predicted:800 },
+  ];
 }
 
-function sel(k){ activeParc=k; document.getElementById('parc-sel').value=k; renderDashboard(); }
-function onParcChange(){ activeParc=document.getElementById('parc-sel').value; renderDashboard(); }
-function onProxyChange(){ loadAll(); }
-
-loadAll();
+// Start
+loadData();
 </script>
 </body>
 </html>

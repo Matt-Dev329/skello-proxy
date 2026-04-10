@@ -218,6 +218,33 @@ canvas{max-height:220px;}
       <canvas id="chart-hourstype"></canvas>
     </div>
   </div>
+  <!-- PANNEAU SYNCHRONISATION -->
+  <div class="section-title">Synchronisation des données</div>
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-header">
+      <div class="card-title">🔄 Importer depuis Skello → Supabase</div>
+      <div class="card-badge">Manuel</div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
+      <div class="ctrl-group">
+        <div class="ctrl-label">Mois à synchroniser</div>
+        <input type="month" id="sync-month" style="min-width:160px">
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px">
+        <button class="sync-btn" onclick="syncAll()" style="background:linear-gradient(135deg,var(--purple),var(--pink));border:none;color:white;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px">
+          ⚡ Tout synchroniser
+        </button>
+        <button class="sync-btn" onclick="syncAbsences()" style="background:rgba(244,114,182,0.15);border:1px solid rgba(244,114,182,0.4);color:var(--pink);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500">
+          😷 Absences seulement
+        </button>
+        <button class="sync-btn" onclick="syncEffectifs()" style="background:rgba(34,211,238,0.15);border:1px solid rgba(34,211,238,0.4);color:var(--cyan);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500">
+          👥 Effectifs seulement
+        </button>
+      </div>
+    </div>
+    <div id="sync-result" style="font-size:12px;color:var(--muted);min-height:20px"></div>
+  </div>
+
   <div style="text-align:center;padding:20px 0;font-size:11px;color:var(--muted)">
     NIKITO Dashboard • Données Supabase live • <span id="last-update">—</span>
   </div>
@@ -316,6 +343,69 @@ function renderDashboard(){
   mkChart('chart-hourstype','bar',{labels:kpis.map(d=>d.parc.replace('NIKITO ','').substring(0,12)),datasets:[{label:'Heures supp.',data:kpis.map(d=>parseFloat(d.heures_sup||0)),backgroundColor:'#facc15cc',borderRadius:6},{label:'Heures compl.',data:kpis.map(d=>parseFloat(d.heures_comp||0)),backgroundColor:'#22d3eecc',borderRadius:6}]});
 }
 function mkChart(id,type,data,extra={}){if(CH[id])CH[id].destroy();const ctx=document.getElementById(id);if(!ctx)return;CH[id]=new Chart(ctx,{type,data,options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{labels:{color:'#9999bb',font:{size:11},boxWidth:12}}},scales:{x:{grid:{color:'rgba(138,43,226,0.08)'},ticks:{color:'#6b6b8a',font:{size:10}},...(extra.scales?.x||{})},y:{grid:{color:'rgba(138,43,226,0.08)'},ticks:{color:'#6b6b8a',font:{size:10}},...(extra.scales?.y||{})}}, ...extra}});}
+// ─── SYNC FUNCTIONS ───────────────────────────────────────────
+const PROXY_URL = 'https://skello-proxy-1.onrender.com';
+
+function getSyncMonth() {
+  const v = document.getElementById('sync-month').value;
+  if (!v) { alert('Sélectionnez un mois à synchroniser'); return null; }
+  return v; // format: 2026-04
+}
+
+function setSyncResult(msg, ok) {
+  const el = document.getElementById('sync-result');
+  el.style.color = ok ? 'var(--green)' : ok === false ? 'var(--red)' : 'var(--yellow)';
+  el.textContent = msg;
+}
+
+async function syncAll() {
+  const mois = getSyncMonth(); if (!mois) return;
+  setSyncResult(`⏳ Synchronisation complète de ${mois}...`, null);
+  try {
+    const r = await fetch(`${PROXY_URL}/api/save/${mois}`, { method: 'POST' });
+    const d = await r.json();
+    if (r.ok) {
+      setSyncResult(`✅ Synchronisation terminée — KPIs: ${d.kpis} · Absences: ${d.absences} · Effectifs: ${d.effectifs}`, true);
+      setTimeout(loadAll, 1000);
+    } else {
+      setSyncResult(`❌ Erreur: ${d.error}`, false);
+    }
+  } catch(e) { setSyncResult(`❌ ${e.message}`, false); }
+}
+
+async function syncAbsences() {
+  const mois = getSyncMonth(); if (!mois) return;
+  setSyncResult(`⏳ Import absences ${mois}...`, null);
+  try {
+    const r = await fetch(`${PROXY_URL}/api/save-absences/${mois}`, { method: 'POST' });
+    const d = await r.json();
+    if (r.ok) {
+      setSyncResult(`✅ Absences importées — ${d.parcs} parcs`, true);
+      setTimeout(loadAll, 1000);
+    } else {
+      setSyncResult(`❌ Erreur: ${d.error}`, false);
+    }
+  } catch(e) { setSyncResult(`❌ ${e.message}`, false); }
+}
+
+async function syncEffectifs() {
+  const mois = getSyncMonth(); if (!mois) return;
+  setSyncResult(`⏳ Import effectifs ${mois}...`, null);
+  try {
+    const r = await fetch(`${PROXY_URL}/api/save-effectifs/${mois}`, { method: 'POST' });
+    const d = await r.json();
+    if (r.ok) {
+      setSyncResult(`✅ Effectifs importés — ${d.parcs} parcs`, true);
+      setTimeout(loadAll, 1000);
+    } else {
+      setSyncResult(`❌ Erreur: ${d.error}`, false);
+    }
+  } catch(e) { setSyncResult(`❌ ${e.message}`, false); }
+}
+
+// Init sync month = current month
+document.getElementById('sync-month').value = document.getElementById('month-select').value;
+
 loadAll();
 </script>
 </body>

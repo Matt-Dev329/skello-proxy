@@ -626,7 +626,25 @@ async function loadData() {
     const res = await fetch(`${PROXY_URL}/api/kpis?date=${date}`);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const json = await res.json();
-    rawData = Array.isArray(json) ? json : (json.data || json.kpis || []);
+
+    // Skello returns either:
+    // { "NIKITO Franconville": { predicted:{...}, real:{...} }, ... }
+    // OR an array
+    let rawArr;
+    if (Array.isArray(json)) {
+      rawArr = json;
+    } else if (json.data) {
+      rawArr = json.data;
+    } else if (typeof json === 'object' && json !== null) {
+      // Convert object keys to array with name field
+      rawArr = Object.entries(json).map(([name, val]) => ({
+        name,
+        ...(typeof val === 'object' ? val : {})
+      }));
+    } else {
+      rawArr = [];
+    }
+    rawData = rawArr;
     if (!rawData.length) throw new Error('Aucune donnée reçue');
 
     // Populate park selector
@@ -682,15 +700,49 @@ function getFilteredData() {
 }
 
 function normalizePark(d) {
+  // Skello API returns { "NIKITO Xxx": { predicted: {...}, real: {...} } }
+  // OR flat array items with name + real/predicted sub-objects
+  // Also note: Skello has a typo → "salay_mass" (no 'r')
+
+  const real = d.real || {};
+  const predicted = d.predicted || {};
+
+  // over_hours can be a nested object {over_hours_slice1, over_hours_slice2} or a flat number
+  const parseHours = (val) => {
+    if (!val) return 0;
+    if (typeof val === 'number') return val;
+    if (typeof val === 'object') {
+      // Sum all slices
+      return Object.values(val).reduce((s, v) => s + parseFloat(v || 0), 0);
+    }
+    return parseFloat(val) || 0;
+  };
+
+  const salary_mass = parseFloat(
+    real.salay_mass || real.salary_mass ||
+    d.salay_mass || d.salary_mass || 0
+  );
+  const salary_mass_predicted = parseFloat(
+    predicted.salay_mass || predicted.salary_mass ||
+    d.salary_mass_predicted || 0
+  );
+  const worked_hours = parseFloat(
+    real.worked_hours || d.worked_hours || 0
+  );
+  const over_hours = parseHours(real.over_hours || d.over_hours);
+  const complementary_hours = parseHours(real.complementary_hours || d.complementary_hours);
+  const revenue = parseFloat(real.revenue || d.revenue || 0);
+  const revenue_predicted = parseFloat(predicted.revenue || d.revenue_predicted || 0);
+
   return {
     name: d.name || d.location_name || d.establishment_name || 'Parc',
-    salary_mass: parseFloat(d.salary_mass || d.salaryMass || d.masse_salariale || d.real?.salary_mass || 0),
-    salary_mass_predicted: parseFloat(d.salary_mass_predicted || d.predicted?.salary_mass || 0),
-    worked_hours: parseFloat(d.worked_hours || d.workedHours || d.heures_travaillees || d.real?.worked_hours || 0),
-    over_hours: parseFloat(d.over_hours || d.overHours || d.heures_sup || 0),
-    complementary_hours: parseFloat(d.complementary_hours || d.complementaryHours || 0),
-    revenue: parseFloat(d.revenue || d.ca || d.chiffre_affaires || d.real?.revenue || 0),
-    revenue_predicted: parseFloat(d.revenue_predicted || d.predicted?.revenue || 0),
+    salary_mass,
+    salary_mass_predicted,
+    worked_hours,
+    over_hours,
+    complementary_hours,
+    revenue,
+    revenue_predicted,
   };
 }
 

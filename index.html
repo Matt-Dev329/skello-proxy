@@ -7,424 +7,103 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  :root {
-    --bg: #08080f;
-    --surface: #0f0f1a;
-    --surface2: #14142a;
-    --border: rgba(138, 43, 226, 0.18);
-    --purple: #7c3aed;
-    --purple-light: #a855f7;
-    --neon: #c084fc;
-    --pink: #f472b6;
-    --cyan: #22d3ee;
-    --green: #4ade80;
-    --yellow: #facc15;
-    --red: #f87171;
-    --text: #f1f0ff;
-    --muted: #6b6b8a;
-    --card-radius: 14px;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    min-height: 100vh;
-  }
-  /* Stars background */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      radial-gradient(1px 1px at 10% 20%, rgba(192,132,252,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 30% 60%, rgba(192,132,252,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 70% 10%, rgba(34,211,238,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 85% 50%, rgba(192,132,252,0.2) 0%, transparent 100%),
-      radial-gradient(1px 1px at 50% 80%, rgba(34,211,238,0.2) 0%, transparent 100%),
-      radial-gradient(1px 1px at 20% 90%, rgba(244,114,182,0.2) 0%, transparent 100%),
-      radial-gradient(1px 1px at 90% 70%, rgba(192,132,252,0.3) 0%, transparent 100%),
-      radial-gradient(2px 2px at 60% 40%, rgba(192,132,252,0.15) 0%, transparent 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* HEADER */
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(8,8,15,0.92);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 28px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    height: 64px;
-  }
-  .logo {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--purple), var(--pink));
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Syne', sans-serif;
-    font-weight: 800; font-size: 16px;
-    flex-shrink: 0;
-  }
-  .header-title {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 16px;
-    letter-spacing: 0.02em;
-  }
-  .header-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
-  .header-spacer { flex: 1; }
-  .status-badge {
-    display: flex; align-items: center; gap: 7px;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    border: 1px solid;
-    transition: all 0.3s;
-  }
-  .status-badge.live {
-    background: rgba(74,222,128,0.08);
-    border-color: rgba(74,222,128,0.3);
-    color: var(--green);
-  }
-  .status-badge.demo {
-    background: rgba(250,204,21,0.08);
-    border-color: rgba(250,204,21,0.3);
-    color: var(--yellow);
-  }
-  .status-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: currentColor;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%,100%{opacity:1;transform:scale(1)}
-    50%{opacity:0.5;transform:scale(1.3)}
-  }
-  .btn-refresh {
-    background: rgba(124,58,237,0.15);
-    border: 1px solid rgba(124,58,237,0.4);
-    color: var(--purple-light);
-    padding: 7px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 500;
-    transition: all 0.2s;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .btn-refresh:hover { background: rgba(124,58,237,0.3); }
-  .btn-refresh svg { width:14px;height:14px; }
-
-  /* CONTROLS BAR */
-  .controls {
-    position: relative; z-index: 1;
-    padding: 16px 28px;
-    display: flex; align-items: center; gap: 12px;
-    flex-wrap: wrap;
-    border-bottom: 1px solid var(--border);
-    background: rgba(15,15,26,0.6);
-  }
-  .ctrl-group { display: flex; flex-direction: column; gap: 4px; }
-  .ctrl-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
-  select, input[type=number], input[type=month] {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 7px 12px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    outline: none;
-    transition: border-color 0.2s;
-    min-width: 160px;
-  }
-  select:focus, input:focus { border-color: var(--purple); }
-  input[type=number] { min-width: 130px; }
-
-  /* MAIN */
-  main {
-    position: relative; z-index: 1;
-    padding: 24px 28px;
-    max-width: 1600px;
-    margin: 0 auto;
-  }
-
-  /* ALERT BANNER */
-  .alert-banner {
-    display: flex; align-items: center; gap: 10px;
-    padding: 12px 18px;
-    border-radius: 10px;
-    font-size: 12px;
-    margin-bottom: 20px;
-    background: rgba(250,204,21,0.07);
-    border: 1px solid rgba(250,204,21,0.2);
-    color: var(--yellow);
-  }
-  .alert-banner.success {
-    background: rgba(74,222,128,0.07);
-    border-color: rgba(74,222,128,0.2);
-    color: var(--green);
-  }
-
-  /* OBJECTIF ANNUEL */
-  .objectif-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--card-radius);
-    padding: 20px 24px;
-    margin-bottom: 20px;
-    display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
-  }
-  .objectif-icon { font-size: 22px; }
-  .objectif-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; }
-  .objectif-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .objectif-input-group { display: flex; flex-direction: column; gap: 4px; }
-  .objectif-bar-wrap { flex: 1; min-width: 260px; }
-  .objectif-numbers {
-    display: flex; justify-content: space-between;
-    font-size: 11px; color: var(--muted); margin-bottom: 8px;
-  }
-  .objectif-numbers strong { color: var(--text); font-size: 13px; }
-  .bar-track {
-    height: 8px; background: var(--surface2);
-    border-radius: 4px; overflow: hidden;
-  }
-  .bar-fill {
-    height: 100%;
-    border-radius: 4px;
-    background: linear-gradient(90deg, var(--purple), var(--pink));
-    transition: width 0.8s cubic-bezier(.4,0,.2,1);
-  }
-  .objectif-restant {
-    text-align: right; min-width: 100px;
-  }
-  .restant-val { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--neon); }
-  .restant-label { font-size: 11px; color: var(--muted); }
-  .pct-badge {
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 11px; font-weight: 600;
-    background: rgba(192,132,252,0.12);
-    color: var(--neon);
-  }
-
-  /* KPI GRID */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 14px;
-    margin-bottom: 20px;
-  }
-  .kpi-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--card-radius);
-    padding: 18px 20px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-  .kpi-card:hover { border-color: rgba(138,43,226,0.4); transform: translateY(-2px); }
-  .kpi-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: var(--accent, linear-gradient(90deg, var(--purple), var(--pink)));
-  }
-  .kpi-icon { font-size: 18px; margin-bottom: 10px; }
-  .kpi-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
-  .kpi-value {
-    font-family: 'Syne', sans-serif;
-    font-size: 22px; font-weight: 800;
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-  .kpi-delta {
-    display: inline-flex; align-items: center; gap: 4px;
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 4px;
-  }
-  .kpi-delta.up { background: rgba(74,222,128,0.1); color: var(--green); }
-  .kpi-delta.down { background: rgba(248,113,113,0.1); color: var(--red); }
-  .kpi-delta.neutral { background: rgba(107,107,138,0.15); color: var(--muted); }
-  .kpi-sub { font-size: 10px; color: var(--muted); margin-top: 4px; }
-
-  /* TWO COLUMN LAYOUT */
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-  @media (max-width: 900px) {
-    .two-col, .three-col { grid-template-columns: 1fr; }
-  }
-
-  /* CARD */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--card-radius);
-    padding: 20px 22px;
-  }
-  .card-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 16px;
-  }
-  .card-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 13px; font-weight: 700;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .card-badge {
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    background: rgba(124,58,237,0.15);
-    color: var(--purple-light);
-    font-weight: 500;
-  }
-  canvas { max-height: 220px; }
-
-  /* TABLE */
-  .data-table { width: 100%; border-collapse: collapse; }
-  .data-table th {
-    font-size: 10px; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.07em;
-    padding: 8px 10px; text-align: left;
-    border-bottom: 1px solid var(--border);
-  }
-  .data-table td {
-    padding: 10px 10px;
-    font-size: 13px;
-    border-bottom: 1px solid rgba(138,43,226,0.07);
-  }
-  .data-table tr:last-child td { border-bottom: none; }
-  .data-table tr:hover td { background: rgba(124,58,237,0.05); }
-  .park-dot {
-    display: inline-block;
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    margin-right: 8px;
-  }
-
-  /* TAUX ENCADREMENT */
-  .encadrement-bars { display: flex; flex-direction: column; gap: 12px; margin-top: 6px; }
-  .enc-row {}
-  .enc-labels { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
-  .enc-bar-track { height: 10px; background: var(--surface2); border-radius: 5px; overflow: hidden; }
-  .enc-bar-fill { height: 100%; border-radius: 5px; transition: width 0.8s; }
-  .enc-target-line {
-    position: relative; height: 0;
-    border-top: 2px dashed rgba(250,204,21,0.5);
-    margin-top: -10px;
-  }
-
-  /* ABSENTÉISME */
-  .abs-list { display: flex; flex-direction: column; gap: 8px; }
-  .abs-row {
-    display: flex; align-items: center; gap: 10px;
-  }
-  .abs-motif { flex: 1; font-size: 12px; }
-  .abs-bar-wrap { flex: 2; }
-  .abs-bar-track { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
-  .abs-bar-fill { height: 100%; border-radius: 3px; }
-  .abs-val { font-size: 11px; color: var(--muted); min-width: 70px; text-align: right; }
-
-  /* MOYENNE SOCIÉTÉ */
-  .vs-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-  .vs-item {
-    background: var(--surface2);
-    border-radius: 10px; padding: 14px;
-    text-align: center;
-  }
-  .vs-label { font-size: 10px; color: var(--muted); margin-bottom: 8px; }
-  .vs-vals { display: flex; justify-content: center; gap: 14px; align-items: flex-end; }
-  .vs-val { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
-  .vs-avg { font-size: 11px; color: var(--muted); }
-  .vs-icon { font-size: 16px; margin-bottom: 4px; }
-  .vs-ok { color: var(--green); }
-  .vs-warn { color: var(--yellow); }
-  .vs-bad { color: var(--red); }
-
-  /* LOADING */
-  .skeleton {
-    background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: 6px;
-    height: 22px;
-  }
-  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-  /* SECTION TITLE */
-  .section-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.1em;
-    color: var(--muted);
-    margin-bottom: 14px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .section-title::after {
-    content: '';
-    flex: 1; height: 1px;
-    background: var(--border);
-  }
-
-  /* TABS */
-  .tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
-  .tab-btn {
-    padding: 7px 16px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 12px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    transition: all 0.2s;
-    display: flex; align-items: center; gap: 7px;
-  }
-  .tab-btn:hover { border-color: var(--purple); color: var(--text); }
-  .tab-btn.active {
-    background: rgba(124,58,237,0.2);
-    border-color: var(--purple);
-    color: var(--purple-light);
-  }
-  .tab-dot { width: 8px; height: 8px; border-radius: 50%; }
-
-  /* DELTA COMPARISON */
-  .delta-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-  }
-  .delta-row:last-child { border-bottom: none; }
-  .delta-label { color: var(--muted); }
-  .delta-values { display: flex; gap: 20px; align-items: center; }
-  .delta-curr { font-weight: 600; }
-  .delta-prev { font-size: 12px; color: var(--muted); }
-  .delta-pct {
-    padding: 2px 8px; border-radius: 4px;
-    font-size: 11px; font-weight: 600;
-  }
-  .delta-pct.pos { background: rgba(74,222,128,0.1); color: var(--green); }
-  .delta-pct.neg { background: rgba(248,113,113,0.1); color: var(--red); }
+:root{--bg:#08080f;--surface:#0f0f1a;--surface2:#14142a;--border:rgba(138,43,226,0.18);--purple:#7c3aed;--purple-light:#a855f7;--neon:#c084fc;--pink:#f472b6;--cyan:#22d3ee;--green:#4ade80;--yellow:#facc15;--red:#f87171;--text:#f1f0ff;--muted:#6b6b8a;--card-radius:14px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(1px 1px at 10% 20%,rgba(192,132,252,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 30% 60%,rgba(192,132,252,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 70% 10%,rgba(34,211,238,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 85% 50%,rgba(192,132,252,0.2) 0%,transparent 100%),radial-gradient(1px 1px at 50% 80%,rgba(34,211,238,0.2) 0%,transparent 100%),radial-gradient(1px 1px at 20% 90%,rgba(244,114,182,0.2) 0%,transparent 100%),radial-gradient(1px 1px at 90% 70%,rgba(192,132,252,0.3) 0%,transparent 100%),radial-gradient(2px 2px at 60% 40%,rgba(192,132,252,0.15) 0%,transparent 100%);pointer-events:none;z-index:0;}
+header{position:sticky;top:0;z-index:100;background:rgba(8,8,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;gap:20px;height:64px;}
+.logo{width:36px;height:36px;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:16px;flex-shrink:0;}
+.header-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;letter-spacing:0.02em;}
+.header-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.header-spacer{flex:1;}
+.status-badge{display:flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid;transition:all 0.3s;}
+.status-badge.live{background:rgba(74,222,128,0.08);border-color:rgba(74,222,128,0.3);color:var(--green);}
+.status-badge.loading{background:rgba(250,204,21,0.08);border-color:rgba(250,204,21,0.3);color:var(--yellow);}
+.status-badge.error{background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.3);color:var(--red);}
+.status-dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}
+.btn-refresh{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.4);color:var(--purple-light);padding:7px 16px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
+.btn-refresh:hover{background:rgba(124,58,237,0.3);}
+.btn-refresh svg{width:14px;height:14px;}
+.controls{position:relative;z-index:1;padding:16px 28px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--border);background:rgba(15,15,26,0.6);}
+.ctrl-group{display:flex;flex-direction:column;gap:4px;}
+.ctrl-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;}
+select,input[type=number],input[type=month]{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;outline:none;transition:border-color 0.2s;min-width:160px;}
+select:focus,input:focus{border-color:var(--purple);}
+main{position:relative;z-index:1;padding:24px 28px;max-width:1600px;margin:0 auto;}
+.alert-banner{display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:10px;font-size:12px;margin-bottom:20px;}
+.alert-banner.success{background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);color:var(--green);}
+.alert-banner.error{background:rgba(248,113,113,0.07);border:1px solid rgba(248,113,113,0.2);color:var(--red);}
+.alert-banner.info{background:rgba(192,132,252,0.07);border:1px solid rgba(192,132,252,0.2);color:var(--neon);}
+.objectif-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-radius);padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;}
+.objectif-label{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;}
+.objectif-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.objectif-bar-wrap{flex:1;min-width:260px;}
+.objectif-numbers{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:8px;}
+.objectif-numbers strong{color:var(--text);font-size:13px;}
+.bar-track{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--purple),var(--pink));transition:width 0.8s cubic-bezier(.4,0,.2,1);}
+.objectif-restant{text-align:right;min-width:100px;}
+.restant-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--neon);}
+.restant-label{font-size:11px;color:var(--muted);}
+.pct-badge{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(192,132,252,0.12);color:var(--neon);}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-radius);padding:18px 20px;position:relative;overflow:hidden;transition:border-color 0.2s,transform 0.2s;}
+.kpi-card:hover{border-color:rgba(138,43,226,0.4);transform:translateY(-2px);}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent,linear-gradient(90deg,var(--purple),var(--pink)));}
+.kpi-icon{font-size:18px;margin-bottom:10px;}
+.kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;}
+.kpi-value{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1;margin-bottom:6px;}
+.kpi-delta{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:4px;}
+.kpi-delta.up{background:rgba(74,222,128,0.1);color:var(--green);}
+.kpi-delta.down{background:rgba(248,113,113,0.1);color:var(--red);}
+.kpi-sub{font-size:10px;color:var(--muted);margin-top:4px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+@media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-radius);padding:20px 22px;}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.card-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.card-badge{font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(124,58,237,0.15);color:var(--purple-light);font-weight:500;}
+canvas{max-height:220px;}
+.data-table{width:100%;border-collapse:collapse;}
+.data-table th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);}
+.data-table td{padding:10px;font-size:13px;border-bottom:1px solid rgba(138,43,226,0.07);}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:rgba(124,58,237,0.05);}
+.park-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;}
+.enc-bars{display:flex;flex-direction:column;gap:12px;}
+.enc-labels{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;}
+.enc-bar-track{height:10px;background:var(--surface2);border-radius:5px;overflow:hidden;}
+.enc-bar-fill{height:100%;border-radius:5px;transition:width 0.8s;}
+.abs-list{display:flex;flex-direction:column;gap:8px;}
+.abs-row{display:flex;align-items:center;gap:10px;}
+.abs-motif{flex:1;font-size:12px;}
+.abs-bar-track{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;}
+.abs-bar-fill{height:100%;border-radius:3px;}
+.abs-val{font-size:11px;color:var(--muted);min-width:70px;text-align:right;}
+.vs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;}
+.vs-item{background:var(--surface2);border-radius:10px;padding:14px;text-align:center;}
+.vs-label{font-size:10px;color:var(--muted);margin-bottom:8px;}
+.vs-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;}
+.vs-ok{color:var(--green);}.vs-warn{color:var(--yellow);}
+.skeleton{background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px;height:22px;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.section-title{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.delta-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.delta-row:last-child{border-bottom:none;}
+.delta-label{color:var(--muted);}
+.delta-values{display:flex;gap:16px;align-items:center;}
+.delta-curr{font-weight:600;}
+.delta-prev{font-size:12px;color:var(--muted);}
+.delta-pct{padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;}
+.delta-pct.pos{background:rgba(74,222,128,0.1);color:var(--green);}
+.delta-pct.neg{background:rgba(248,113,113,0.1);color:var(--red);}
+.empty-state{text-align:center;padding:30px 20px;color:var(--muted);font-size:12px;}
+.empty-icon{font-size:28px;margin-bottom:8px;}
 </style>
 </head>
 <body>
-
-<!-- HEADER -->
 <header>
   <div class="logo">N</div>
   <div>
@@ -432,17 +111,15 @@
     <div class="header-sub" id="header-sub">Tableau de bord multi-parcs</div>
   </div>
   <div class="header-spacer"></div>
-  <div class="status-badge demo" id="status-badge">
+  <div class="status-badge loading" id="status-badge">
     <div class="status-dot"></div>
     <span id="status-text">Chargement...</span>
   </div>
-  <button class="btn-refresh" onclick="loadData()">
+  <button class="btn-refresh" onclick="loadAll()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
     Actualiser
   </button>
 </header>
-
-<!-- CONTROLS -->
 <div class="controls">
   <div class="ctrl-group">
     <div class="ctrl-label">Parc</div>
@@ -452,24 +129,16 @@
   </div>
   <div class="ctrl-group">
     <div class="ctrl-label">Période</div>
-    <input type="month" id="month-select" onchange="loadData()">
-  </div>
-  <div class="ctrl-group">
-    <div class="ctrl-label">Cible annuelle MS (€)</div>
-    <input type="number" id="cible-annuelle" value="360000" step="10000" oninput="renderDashboard()">
+    <input type="month" id="month-select" onchange="loadAll()">
   </div>
 </div>
-
-<!-- MAIN -->
 <main>
-  <div id="alert-banner" class="alert-banner" style="display:none"></div>
-
-  <!-- OBJECTIF ANNUEL -->
-  <div class="objectif-card" id="objectif-card">
-    <div class="objectif-icon">🎯</div>
+  <div id="alert-banner" style="display:none" class="alert-banner info"></div>
+  <div class="objectif-card">
+    <div style="font-size:22px">🎯</div>
     <div>
       <div class="objectif-label">Objectif annuel masse salariale</div>
-      <div class="objectif-sub">Pilotage cumul annuel</div>
+      <div class="objectif-sub">Pilotage cumul annuel — données Supabase live</div>
     </div>
     <div class="objectif-bar-wrap">
       <div class="objectif-numbers">
@@ -487,8 +156,6 @@
       <div style="font-size:10px;color:var(--muted);margin-top:2px" id="mois-restants"></div>
     </div>
   </div>
-
-  <!-- KPI CARDS -->
   <div class="section-title">Indicateurs clés du mois</div>
   <div class="kpi-grid" id="kpi-grid">
     <div class="kpi-card"><div class="skeleton" style="height:80px"></div></div>
@@ -497,521 +164,159 @@
     <div class="kpi-card"><div class="skeleton" style="height:80px"></div></div>
     <div class="kpi-card"><div class="skeleton" style="height:80px"></div></div>
   </div>
-
-  <!-- CHARTS ROW 1 -->
   <div class="section-title">Masse salariale & CA</div>
   <div class="two-col">
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">📊 Masse salariale vs N-1</div>
-        <div class="card-badge">Mensuel</div>
-      </div>
+      <div class="card-header"><div class="card-title">📊 Masse salariale vs Prévisionnel</div><div class="card-badge">Mensuel</div></div>
       <canvas id="chart-ms"></canvas>
     </div>
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">💰 Ratio MS / CA par parc</div>
-        <div class="card-badge">Live</div>
-      </div>
+      <div class="card-header"><div class="card-title">💰 Ratio MS / CA par parc</div><div class="card-badge">Live Supabase</div></div>
       <canvas id="chart-ratio"></canvas>
     </div>
   </div>
-
-  <!-- COMPARATIF -->
-  <div class="section-title">Comparatifs M-1 & N-1</div>
+  <div class="section-title">Comparatifs & Tableau multi-parcs</div>
   <div class="two-col">
     <div class="card">
-      <div class="card-header"><div class="card-title">🔄 Évolution coût personnel</div></div>
+      <div class="card-header"><div class="card-title">🔄 Évolution & Objectifs</div></div>
       <div id="delta-comparatif"></div>
     </div>
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">🏆 Tableau multi-parcs</div>
-        <div class="card-badge">Consolidé</div>
-      </div>
+      <div class="card-header"><div class="card-title">🏆 Tableau multi-parcs</div><div class="card-badge">Consolidé</div></div>
       <div style="overflow-x:auto">
-        <table class="data-table" id="multi-table">
-          <thead>
-            <tr>
-              <th>Parc</th>
-              <th>Masse sal.</th>
-              <th>Heures</th>
-              <th>CA</th>
-              <th>Ratio MS/CA</th>
-            </tr>
-          </thead>
+        <table class="data-table">
+          <thead><tr><th>Parc</th><th>Masse sal.</th><th>Heures</th><th>CA</th><th>Ratio MS/CA</th><th>Coût/h</th></tr></thead>
           <tbody id="multi-tbody"></tbody>
         </table>
       </div>
     </div>
   </div>
-
-  <!-- ROW 3 -->
   <div class="section-title">Absentéisme & Encadrement</div>
   <div class="two-col">
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">😷 Absentéisme par motif</div>
-        <div class="card-badge">Jours + Heures</div>
-      </div>
-      <div class="abs-list" id="abs-list"></div>
+      <div class="card-header"><div class="card-title">😷 Absentéisme par motif</div><div class="card-badge">Jours</div></div>
+      <div class="abs-list" id="abs-list"><div class="empty-state"><div class="empty-icon">📋</div>Alimentez la table <code>absenteisme</code> dans Supabase</div></div>
     </div>
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">👔 Taux d'encadrement</div>
-        <div class="card-badge">Par parc</div>
-      </div>
-      <div class="encadrement-bars" id="enc-bars"></div>
+      <div class="card-header"><div class="card-title">👔 Taux d'encadrement</div><div class="card-badge">Par parc</div></div>
+      <div class="enc-bars" id="enc-bars"><div class="empty-state"><div class="empty-icon">👥</div>Alimentez la table <code>effectifs</code> dans Supabase</div></div>
     </div>
   </div>
-
-  <!-- VS MOYENNE SOCIÉTÉ -->
   <div class="section-title">Vue comparative — parc vs moyenne société</div>
   <div class="card" style="margin-bottom:20px">
-    <div class="card-header">
-      <div class="card-title">📡 Comparatif parc sélectionné vs moyenne société</div>
-    </div>
-    <div class="vs-grid" id="vs-grid"></div>
+    <div class="card-header"><div class="card-title">📡 Comparatif parc sélectionné vs moyenne société</div></div>
+    <div class="vs-grid" id="vs-grid"><div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📊</div>Sélectionnez un parc spécifique</div></div>
   </div>
-
-  <!-- CHART HEURES -->
   <div class="section-title">Analyse horaire</div>
   <div class="two-col">
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">⏱️ Heures travaillées par parc</div>
-      </div>
+      <div class="card-header"><div class="card-title">⏱️ Heures travaillées par parc</div></div>
       <canvas id="chart-heures"></canvas>
     </div>
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">📈 Heures supplémentaires & complémentaires</div>
-      </div>
+      <div class="card-header"><div class="card-title">📈 Heures sup & complémentaires</div></div>
       <canvas id="chart-hourstype"></canvas>
     </div>
   </div>
-
   <div style="text-align:center;padding:20px 0;font-size:11px;color:var(--muted)">
-    NIKITO Dashboard • Données Skello live via proxy sécurisé • <span id="last-update">—</span>
+    NIKITO Dashboard • Données Supabase live • <span id="last-update">—</span>
   </div>
 </main>
-
 <script>
-const PROXY_URL = 'https://skello-proxy.onrender.com';
-
-const PARK_COLORS = {
-  'NIKITO Franconville': '#7c3aed',
-  'NIKITO Domus':        '#f472b6',
-  'NIKITO STE Geneviève':'#22d3ee',
-  'NIKITO Alfortville':  '#4ade80',
-};
-const PARK_COLORS_ARR = ['#7c3aed','#f472b6','#22d3ee','#4ade80','#facc15','#f87171'];
-
-let rawData = [];
-let charts = {};
-
-// Init date to current month
-const now = new Date();
-document.getElementById('month-select').value =
-  `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-
-async function loadData() {
-  const monthVal = document.getElementById('month-select').value;
-  const [year, month] = monthVal.split('-');
-  const date = `${year}-${month}-01`;
-
+const SB_URL='https://wmxtprwprdthgbvvbmzy.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndteHRwcndwcmR0aGdidnZibXp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4MDI5ODksImV4cCI6MjA5MTM3ODk4OX0.1d1q0ppjbdKL-E2qzhVVdshiGZ_4v1XocDEgqJCbGXE';
+const C=['#7c3aed','#f472b6','#22d3ee','#4ade80','#facc15','#f87171'];
+let D={kpis:[],ytd:[],ytdC:null,abs:[],enc:[],comp:[],multi:[]};
+let CH={};
+const now=new Date();
+document.getElementById('month-select').value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+async function sb(p){const r=await fetch(`${SB_URL}/rest/v1/${p}`,{headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`}});if(!r.ok)throw new Error(`${p}: ${r.status}`);return r.json();}
+async function loadAll(){
   setBadge('loading');
-
-  try {
-    const res = await fetch(`${PROXY_URL}/api/kpis?date=${date}`);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
-
-    // Skello returns either:
-    // { "NIKITO Franconville": { predicted:{...}, real:{...} }, ... }
-    // OR an array
-    let rawArr;
-    if (Array.isArray(json)) {
-      rawArr = json;
-    } else if (json.data) {
-      rawArr = json.data;
-    } else if (typeof json === 'object' && json !== null) {
-      // Convert object keys to array with name field
-      rawArr = Object.entries(json).map(([name, val]) => ({
-        name,
-        ...(typeof val === 'object' ? val : {})
-      }));
-    } else {
-      rawArr = [];
-    }
-    rawData = rawArr;
-    if (!rawData.length) throw new Error('Aucune donnée reçue');
-
-    // Populate park selector
-    const sel = document.getElementById('park-select');
-    const cur = sel.value;
-    sel.innerHTML = '<option value="all">Tous les parcs</option>';
-    const names = [...new Set(rawData.map(d => d.name || d.location_name || d.establishment_name || 'Parc inconnu'))];
-    names.forEach(n => {
-      const opt = document.createElement('option');
-      opt.value = n; opt.textContent = n;
-      sel.appendChild(opt);
-    });
-    if (names.includes(cur)) sel.value = cur;
-
+  const[yr,mo]=document.getElementById('month-select').value.split('-');
+  const mois=`${yr}-${mo}-01`;
+  try{
+    const[kpis,ytd,ytdC,abs,enc,comp,multi]=await Promise.all([
+      sb(`v_kpi_masse_salariale?mois=eq.${mois}&order=parc`),
+      sb(`v_ytd_par_parc?annee=eq.${yr}&order=parc`),
+      sb(`v_ytd_consolide?annee=eq.${yr}`),
+      sb(`v_kpi_absenteisme?mois=eq.${mois}&order=parc`),
+      sb(`v_kpi_encadrement?mois=eq.${mois}&order=parc`),
+      sb(`v_comparatif_parcs?mois=eq.${mois}&order=parc`),
+      sb(`v_tableau_multi_parcs?mois=eq.${mois}&order=parc`),
+    ]);
+    D={kpis,ytd,ytdC:ytdC[0]||null,abs,enc,comp,multi};
+    const parks=[...new Set(kpis.map(d=>d.parc).filter(Boolean))];
+    const sel=document.getElementById('park-select');
+    const cur=sel.value;
+    sel.innerHTML='<option value="all">Tous les parcs</option>';
+    parks.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;sel.appendChild(o);});
+    if(parks.includes(cur))sel.value=cur;
     setBadge('live');
-    showAlert(`✅ ${rawData.length} établissements chargés depuis Skello`, 'success');
-    document.getElementById('last-update').textContent = 'Mis à jour : ' + new Date().toLocaleTimeString('fr-FR');
+    a2(`✅ ${kpis.length} parcs chargés depuis Supabase`,'success');
+    document.getElementById('last-update').textContent=new Date().toLocaleTimeString('fr-FR');
     renderDashboard();
-  } catch(e) {
-    console.warn('Proxy error, using demo data:', e.message);
-    rawData = getDemoData();
-    const sel = document.getElementById('park-select');
-    sel.innerHTML = '<option value="all">Tous les parcs</option>';
-    rawData.forEach(d => {
-      const opt = document.createElement('option');
-      opt.value = d.name; opt.textContent = d.name;
-      sel.appendChild(opt);
-    });
-    setBadge('demo');
-    showAlert(`🚀 Mode démo — Données de référence NIKITO Mars 2026. Connectez l'API Skello pour les données live.`, 'demo');
-    renderDashboard();
-  }
+  }catch(e){setBadge('error');a2(`❌ Erreur : ${e.message}`,'error');}
 }
-
-function setBadge(state) {
-  const badge = document.getElementById('status-badge');
-  const text = document.getElementById('status-text');
-  badge.className = 'status-badge ' + (state === 'live' ? 'live' : state === 'demo' ? 'demo' : 'demo');
-  text.textContent = state === 'live' ? 'API connectée' : state === 'loading' ? 'Chargement...' : 'Mode démo';
-}
-
-function showAlert(msg, type) {
-  const el = document.getElementById('alert-banner');
-  el.className = 'alert-banner' + (type === 'success' ? ' success' : '');
-  el.innerHTML = msg;
-  el.style.display = 'flex';
-}
-
-function getFilteredData() {
-  const park = document.getElementById('park-select').value;
-  if (park === 'all') return rawData;
-  return rawData.filter(d => (d.name || d.location_name || d.establishment_name) === park);
-}
-
-function normalizePark(d) {
-  // Skello API returns { "NIKITO Xxx": { predicted: {...}, real: {...} } }
-  // OR flat array items with name + real/predicted sub-objects
-  // Also note: Skello has a typo → "salay_mass" (no 'r')
-
-  const real = d.real || {};
-  const predicted = d.predicted || {};
-
-  // over_hours can be a nested object {over_hours_slice1, over_hours_slice2} or a flat number
-  const parseHours = (val) => {
-    if (!val) return 0;
-    if (typeof val === 'number') return val;
-    if (typeof val === 'object') {
-      // Sum all slices
-      return Object.values(val).reduce((s, v) => s + parseFloat(v || 0), 0);
-    }
-    return parseFloat(val) || 0;
-  };
-
-  const salary_mass = parseFloat(
-    real.salay_mass || real.salary_mass ||
-    d.salay_mass || d.salary_mass || 0
-  );
-  const salary_mass_predicted = parseFloat(
-    predicted.salay_mass || predicted.salary_mass ||
-    d.salary_mass_predicted || 0
-  );
-  const worked_hours = parseFloat(
-    real.worked_hours || d.worked_hours || 0
-  );
-  const over_hours = parseHours(real.over_hours || d.over_hours);
-  const complementary_hours = parseHours(real.complementary_hours || d.complementary_hours);
-  const revenue = parseFloat(real.revenue || d.revenue || 0);
-  const revenue_predicted = parseFloat(predicted.revenue || d.revenue_predicted || 0);
-
-  return {
-    name: d.name || d.location_name || d.establishment_name || 'Parc',
-    salary_mass,
-    salary_mass_predicted,
-    worked_hours,
-    over_hours,
-    complementary_hours,
-    revenue,
-    revenue_predicted,
-  };
-}
-
-function fmt(n, decimals=0) {
-  if (!n && n!==0) return '—';
-  return new Intl.NumberFormat('fr-FR', {maximumFractionDigits:decimals}).format(n);
-}
-function fmtEuro(n) { return fmt(n) + ' €'; }
-function fmtPct(n) { return fmt(n,1) + ' %'; }
-
-function renderDashboard() {
-  const filtered = getFilteredData().map(normalizePark);
-  if (!filtered.length) return;
-
-  const totalMS = filtered.reduce((s,d) => s+d.salary_mass, 0);
-  const totalH = filtered.reduce((s,d) => s+d.worked_hours, 0);
-  const totalCA = filtered.reduce((s,d) => s+d.revenue, 0);
-  const totalOverH = filtered.reduce((s,d) => s+d.over_hours, 0);
-  const totalComplH = filtered.reduce((s,d) => s+d.complementary_hours, 0);
-  const totalMSPrev = filtered.reduce((s,d) => s+d.salary_mass_predicted, 0);
-
-  const monthVal = document.getElementById('month-select').value;
-  const [year, month] = monthVal.split('-');
-  const monthInt = parseInt(month);
-  document.getElementById('header-sub').textContent =
-    `Tableau de bord multi-parcs · ${new Date(parseInt(year), monthInt-1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}`;
-
-  // OBJECTIF ANNUEL
-  const cible = parseFloat(document.getElementById('cible-annuelle').value) || 360000;
-  const ytdEstimate = totalMS * monthInt;
-  const pct = Math.min((ytdEstimate / cible) * 100, 100);
-  const restant = Math.max(cible - ytdEstimate, 0);
-  const moisRestants = 12 - monthInt;
-  document.getElementById('ytd-value').textContent = fmtEuro(ytdEstimate);
-  document.getElementById('pct-badge').textContent = fmtPct(pct);
-  document.getElementById('bar-fill').style.width = pct + '%';
-  document.getElementById('restant-val').textContent = fmtEuro(restant);
-  document.getElementById('mois-restants').textContent = `sur ${moisRestants} mois restants`;
-
-  // Taux MS/CA
-  const txMS = totalCA > 0 ? (totalMS / totalCA) * 100 : 0;
-  const coutHoraire = totalH > 0 ? totalMS / totalH : 0;
-
-  // KPI GRID
-  const kpiData = [
-    { icon:'💰', label:'Masse salariale', value: fmtEuro(totalMS), accent:'linear-gradient(90deg,#7c3aed,#a855f7)',
-      delta: totalMSPrev > 0 ? ((totalMS - totalMSPrev)/totalMSPrev*100).toFixed(1) : null,
-      sub: `Prévis. : ${fmtEuro(totalMSPrev)}` },
-    { icon:'⏱️', label:'Heures travaillées', value: fmt(totalH,1)+'h', accent:'linear-gradient(90deg,#22d3ee,#06b6d4)',
-      sub: `H.sup : ${fmt(totalOverH,1)}h · Compl. : ${fmt(totalComplH,1)}h` },
-    { icon:'📈', label:'Chiffre d\'affaires', value: fmtEuro(totalCA), accent:'linear-gradient(90deg,#4ade80,#22c55e)',
-      sub: filtered.length > 1 ? `${filtered.length} parcs` : '' },
-    { icon:'🎯', label:'Taux MS / CA', value: fmtPct(txMS), accent:'linear-gradient(90deg,#f472b6,#ec4899)',
-      delta: txMS > 35 ? -1 : 1,
-      sub: txMS > 35 ? '⚠️ Au-dessus de 35%' : '✅ Dans la cible' },
-    { icon:'⚡', label:'Coût horaire moyen', value: fmt(coutHoraire,2)+' €/h', accent:'linear-gradient(90deg,#facc15,#f59e0b)',
-      sub: 'Base heures réelles' },
+function setBadge(s){document.getElementById('status-badge').className='status-badge '+s;document.getElementById('status-text').textContent=s==='live'?'Supabase live':s==='loading'?'Chargement...':'Erreur';}
+function a2(msg,type){const el=document.getElementById('alert-banner');el.className='alert-banner '+type;el.innerHTML=msg;el.style.display='flex';if(type==='success')setTimeout(()=>el.style.display='none',4000);}
+function f(n,d=0){return(n===null||n===undefined)?'—':new Intl.NumberFormat('fr-FR',{maximumFractionDigits:d}).format(parseFloat(n));}
+function fe(n){return n!==null&&n!==undefined&&n!==''?f(n)+' €':'—';}
+function fp(n){return n!==null&&n!==undefined&&n!==''?f(n,1)+' %':'—';}
+function filt(arr){const p=document.getElementById('park-select').value;return p==='all'?arr:arr.filter(d=>d.parc===p);}
+function renderDashboard(){
+  const[yr,mo]=document.getElementById('month-select').value.split('-');
+  const moI=parseInt(mo);
+  const kpis=filt(D.kpis);
+  if(!kpis.length){document.getElementById('kpi-grid').innerHTML=`<div class="kpi-card" style="grid-column:1/-1"><div class="empty-state"><div class="empty-icon">📭</div>Aucune donnée pour cette période dans Supabase</div></div>`;return;}
+  const sum=(arr,k)=>arr.reduce((s,d)=>s+parseFloat(d[k]||0),0);
+  const ms=sum(kpis,'ms_real'),h=sum(kpis,'heures_real'),ca=sum(kpis,'ca_real');
+  const hSup=sum(kpis,'heures_sup'),hComp=sum(kpis,'heures_comp'),msPrev=sum(kpis,'ms_predicted');
+  const ratio=ca>0?(ms/ca*100):0,cout=h>0?ms/h:0;
+  document.getElementById('header-sub').textContent=`Tableau de bord multi-parcs · ${new Date(parseInt(yr),moI-1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}`;
+  const park=document.getElementById('park-select').value;
+  const ytdR=park==='all'?D.ytdC:D.ytd.find(d=>d.parc===park);
+  const msYTD=ytdR?parseFloat(ytdR.ms_ytd||0):0;
+  const cible=ytdR?parseFloat(ytdR.cible_ms||0):0;
+  const pct=cible>0?Math.min(msYTD/cible*100,100):0;
+  document.getElementById('ytd-value').textContent=fe(msYTD);
+  document.getElementById('pct-badge').textContent=cible>0?fp(pct):'Pas de cible';
+  document.getElementById('bar-fill').style.width=pct+'%';
+  document.getElementById('restant-val').textContent=cible>0?fe(Math.max(cible-msYTD,0)):'—';
+  document.getElementById('mois-restants').textContent=cible>0?`sur ${12-moI} mois restants`:'Définissez un objectif dans Supabase';
+  const cards=[
+    {icon:'💰',label:'Masse salariale',value:fe(ms),accent:'linear-gradient(90deg,#7c3aed,#a855f7)',delta:msPrev>0?((ms-msPrev)/msPrev*100).toFixed(1):null,sub:`Prévis. : ${fe(msPrev)}`},
+    {icon:'⏱️',label:'Heures travaillées',value:f(h,1)+'h',accent:'linear-gradient(90deg,#22d3ee,#06b6d4)',sub:`H.sup : ${f(hSup,1)}h · Compl. : ${f(hComp,1)}h`},
+    {icon:'📈',label:"Chiffre d'affaires",value:fe(ca),accent:'linear-gradient(90deg,#4ade80,#22c55e)',sub:kpis.length>1?`${kpis.length} parcs`:''},
+    {icon:'🎯',label:'Taux MS / CA',value:fp(ratio),accent:'linear-gradient(90deg,#f472b6,#ec4899)',delta:ratio>35?-1:1,sub:ratio>35?'⚠️ Au-dessus de 35%':'✅ Dans la cible'},
+    {icon:'⚡',label:'Coût horaire moyen',value:f(cout,2)+' €/h',accent:'linear-gradient(90deg,#facc15,#f59e0b)',sub:'Base heures réelles'},
   ];
-  document.getElementById('kpi-grid').innerHTML = kpiData.map(k => `
-    <div class="kpi-card" style="--accent:${k.accent}">
-      <div class="kpi-icon">${k.icon}</div>
-      <div class="kpi-label">${k.label}</div>
-      <div class="kpi-value">${k.value}</div>
-      ${k.delta != null ? `<div class="kpi-delta ${k.delta > 0 ? 'up' : k.delta < 0 ? 'down' : 'neutral'}">${k.delta > 0 ? '▲' : '▼'} ${Math.abs(k.delta)}%</div>` : ''}
-      ${k.sub ? `<div class="kpi-sub">${k.sub}</div>` : ''}
-    </div>`).join('');
-
-  // CHART - Masse salariale vs N-1 (simulé pour démo)
-  renderChart('chart-ms', 'bar', {
-    labels: filtered.map(d => d.name.replace('NIKITO ','').substring(0,12)),
-    datasets: [
-      { label:'Réel', data: filtered.map(d=>d.salary_mass), backgroundColor: filtered.map((_,i)=>PARK_COLORS_ARR[i]+'cc'), borderRadius:6 },
-      { label:'Prévisionnel', data: filtered.map(d=>d.salary_mass_predicted||d.salary_mass*0.95), backgroundColor: filtered.map((_,i)=>PARK_COLORS_ARR[i]+'44'), borderRadius:6 },
-      { label:'N-1 (estimé)', data: filtered.map(d=>(d.salary_mass*0.92).toFixed(2)), backgroundColor:'transparent', borderColor:filtered.map((_,i)=>PARK_COLORS_ARR[i]), borderWidth:2, type:'line', tension:0.3 },
-    ]
-  });
-
-  // CHART - Ratio MS/CA
-  const ratioData = filtered.filter(d=>d.revenue>0).map(d=>({
-    name: d.name.replace('NIKITO ',''),
-    ratio: (d.salary_mass / d.revenue * 100).toFixed(1)
-  }));
-  renderChart('chart-ratio', 'bar', {
-    labels: ratioData.map(d=>d.name),
-    datasets: [{
-      label:'Ratio MS/CA (%)',
-      data: ratioData.map(d=>d.ratio),
-      backgroundColor: ratioData.map(d=> parseFloat(d.ratio) > 35 ? '#f87171cc' : '#4ade80cc'),
-      borderRadius: 8,
-    }]
-  }, { plugins: { annotation: {} }, scales: { y: { ticks: { callback: v => v+'%' } } } });
-
-  // DELTA COMPARATIF
-  const demoN1 = totalMS * 0.92;
-  const demoM1 = totalMS * 0.97;
-  document.getElementById('delta-comparatif').innerHTML = `
-    <div class="delta-row">
-      <div class="delta-label">Masse salariale</div>
-      <div class="delta-values">
-        <div class="delta-curr">${fmtEuro(totalMS)}</div>
-        <div class="delta-prev">M-1: ${fmtEuro(demoM1)}</div>
-        <div class="delta-pct ${totalMS > demoM1 ? 'neg':'pos'}">
-          ${totalMS > demoM1 ? '+':''}${((totalMS-demoM1)/demoM1*100).toFixed(1)}%
-        </div>
-      </div>
-    </div>
-    <div class="delta-row">
-      <div class="delta-label">vs N-1</div>
-      <div class="delta-values">
-        <div class="delta-curr">${fmtEuro(totalMS)}</div>
-        <div class="delta-prev">N-1: ${fmtEuro(demoN1)}</div>
-        <div class="delta-pct ${totalMS > demoN1 ? 'neg':'pos'}">
-          ${totalMS > demoN1 ? '+':''}${((totalMS-demoN1)/demoN1*100).toFixed(1)}%
-        </div>
-      </div>
-    </div>
-    <div class="delta-row">
-      <div class="delta-label">Heures travaillées</div>
-      <div class="delta-values">
-        <div class="delta-curr">${fmt(totalH,1)}h</div>
-        <div class="delta-prev">M-1: ${fmt(totalH*0.96,1)}h</div>
-        <div class="delta-pct pos">+${((totalH-(totalH*0.96))/(totalH*0.96)*100).toFixed(1)}%</div>
-      </div>
-    </div>
-    <div class="delta-row">
-      <div class="delta-label">Chiffre d'affaires</div>
-      <div class="delta-values">
-        <div class="delta-curr">${fmtEuro(totalCA)}</div>
-        <div class="delta-prev">M-1: ${fmtEuro(totalCA*0.94)}</div>
-        <div class="delta-pct pos">+${((totalCA-(totalCA*0.94))/(totalCA*0.94)*100).toFixed(1)}%</div>
-      </div>
-    </div>
-  `;
-
-  // TABLE MULTI-PARCS
-  const tbody = document.getElementById('multi-tbody');
-  tbody.innerHTML = filtered.map((d,i) => {
-    const ratio = d.revenue > 0 ? (d.salary_mass/d.revenue*100).toFixed(1) : '—';
-    const color = PARK_COLORS[d.name] || PARK_COLORS_ARR[i];
-    const ratioOk = parseFloat(ratio) <= 35;
-    return `<tr>
-      <td><span class="park-dot" style="background:${color}"></span>${d.name.replace('NIKITO ','')}</td>
-      <td>${fmtEuro(d.salary_mass)}</td>
-      <td>${fmt(d.worked_hours,1)}h</td>
-      <td>${d.revenue > 0 ? fmtEuro(d.revenue) : '—'}</td>
-      <td><span style="color:${ratioOk?'var(--green)':'var(--red)'}">${ratio !== '—' ? ratio+'%' : '—'}</span></td>
-    </tr>`;
-  }).join('');
-
-  // ABSENTÉISME
-  const absMotifs = [
-    { motif:'Maladie', jours:2.3, color:'#f472b6' },
-    { motif:'Absence injustifiée', jours:0.5, color:'#f87171' },
-    { motif:'Accident travail', jours:0.2, color:'#facc15' },
-    { motif:'Congé sans solde', jours:0.8, color:'#22d3ee' },
-    { motif:'Maternité / Paternité', jours:1.1, color:'#a855f7' },
-  ];
-  const maxJours = Math.max(...absMotifs.map(a=>a.jours));
-  document.getElementById('abs-list').innerHTML = absMotifs.map(a => `
-    <div class="abs-row">
-      <div class="abs-motif">${a.motif}</div>
-      <div class="abs-bar-wrap">
-        <div class="abs-bar-track">
-          <div class="abs-bar-fill" style="width:${(a.jours/maxJours*100).toFixed(0)}%;background:${a.color}"></div>
-        </div>
-      </div>
-      <div class="abs-val">${a.jours}j · ${(a.jours*7).toFixed(0)}h</div>
-    </div>`).join('');
-
-  // ENCADREMENT
-  const encData = filtered.map((d,i) => ({
-    name: d.name.replace('NIKITO ',''),
-    taux: 8 + i*1.5,
-    color: PARK_COLORS_ARR[i]
-  }));
-  document.getElementById('enc-bars').innerHTML = encData.map(e => `
-    <div class="enc-row">
-      <div class="enc-labels">
-        <span>${e.name}</span>
-        <span style="color:${e.taux>=10?'var(--green)':'var(--yellow)'}">${e.taux.toFixed(1)}% <span style="color:var(--muted);font-size:10px">(cible 10%)</span></span>
-      </div>
-      <div class="enc-bar-track">
-        <div class="enc-bar-fill" style="width:${Math.min(e.taux/20*100,100).toFixed(0)}%;background:${e.color}"></div>
-      </div>
-    </div>`).join('');
-
-  // VS MOYENNE SOCIÉTÉ
-  const avg_ms = totalMS / (filtered.length||1);
-  const avg_h = totalH / (filtered.length||1);
-  const avg_ratio = txMS;
-  const vsItems = [
-    { label:'Masse sal. / parc', val: fmtEuro(avg_ms), avg: fmtEuro(avg_ms*1.05), ok: true, icon:'💰' },
-    { label:'Heures / parc', val: fmt(avg_h,1)+'h', avg: fmt(avg_h*0.98,1)+'h', ok: true, icon:'⏱️' },
-    { label:'Taux MS/CA', val: fmtPct(avg_ratio), avg: '32.0%', ok: avg_ratio <= 35, icon:'📊' },
-    { label:'H. supplémentaires', val: fmt(totalOverH,1)+'h', avg: fmt(totalOverH*1.1,1)+'h', ok: true, icon:'⚡' },
-    { label:'Coût horaire', val: fmt(coutHoraire,2)+'€', avg: fmt(coutHoraire*0.97,2)+'€', ok: true, icon:'🎯' },
-    { label:'H. complémentaires', val: fmt(totalComplH,1)+'h', avg: fmt(totalComplH*0.9,1)+'h', ok: false, icon:'📋' },
-  ];
-  document.getElementById('vs-grid').innerHTML = vsItems.map(v => `
-    <div class="vs-item">
-      <div class="vs-icon">${v.icon}</div>
-      <div class="vs-label">${v.label}</div>
-      <div class="vs-vals">
-        <div>
-          <div class="vs-val ${v.ok?'vs-ok':'vs-warn'}">${v.val}</div>
-          <div style="font-size:10px;color:var(--muted)">Ce parc</div>
-        </div>
-        <div>
-          <div class="vs-avg">${v.avg}</div>
-          <div style="font-size:10px;color:var(--muted)">Moy. soc.</div>
-        </div>
-      </div>
-    </div>`).join('');
-
-  // CHART HEURES
-  renderChart('chart-heures', 'bar', {
-    labels: filtered.map(d=>d.name.replace('NIKITO ','').substring(0,12)),
-    datasets: [{
-      label:'Heures travaillées',
-      data: filtered.map(d=>d.worked_hours),
-      backgroundColor: filtered.map((_,i)=>PARK_COLORS_ARR[i]+'cc'),
-      borderRadius: 8,
-    }]
-  });
-
-  // CHART TYPES HEURES
-  renderChart('chart-hourstype', 'bar', {
-    labels: filtered.map(d=>d.name.replace('NIKITO ','').substring(0,12)),
-    datasets: [
-      { label:'Heures supp.', data: filtered.map(d=>d.over_hours||d.worked_hours*0.05), backgroundColor:'#facc15cc', borderRadius:6 },
-      { label:'Heures compl.', data: filtered.map(d=>d.complementary_hours||d.worked_hours*0.08), backgroundColor:'#22d3eecc', borderRadius:6 },
-    ]
-  }, { scales: { x: { stacked:false }, y: { stacked:false } } });
+  document.getElementById('kpi-grid').innerHTML=cards.map(k=>`<div class="kpi-card" style="--accent:${k.accent}"><div class="kpi-icon">${k.icon}</div><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.value}</div>${k.delta!=null?`<div class="kpi-delta ${parseFloat(k.delta)>0?'up':'down'}">${parseFloat(k.delta)>0?'▲':'▼'} ${Math.abs(k.delta)}%</div>`:''}${k.sub?`<div class="kpi-sub">${k.sub}</div>`:''}</div>`).join('');
+  mkChart('chart-ms','bar',{labels:kpis.map(d=>d.parc.replace('NIKITO ','').substring(0,12)),datasets:[{label:'Réel',data:kpis.map(d=>parseFloat(d.ms_real||0)),backgroundColor:kpis.map((_,i)=>C[i%C.length]+'cc'),borderRadius:6},{label:'Prévisionnel',data:kpis.map(d=>parseFloat(d.ms_predicted||0)),backgroundColor:kpis.map((_,i)=>C[i%C.length]+'44'),borderRadius:6}]});
+  const rd=kpis.filter(d=>parseFloat(d.ca_real||0)>0);
+  mkChart('chart-ratio','bar',{labels:rd.map(d=>d.parc.replace('NIKITO ','')),datasets:[{label:'Ratio MS/CA (%)',data:rd.map(d=>parseFloat(d.ratio_ms_ca||0)),backgroundColor:rd.map(d=>parseFloat(d.ratio_ms_ca||0)>35?'#f87171cc':'#4ade80cc'),borderRadius:8}]},{scales:{y:{ticks:{callback:v=>v+'%'}}}});
+  const caYTD=ytdR?parseFloat(ytdR.ca_ytd||0):0;
+  const ratioYTD=ytdR?parseFloat(ytdR.ratio_ms_ca_ytd||0):ratio;
+  document.getElementById('delta-comparatif').innerHTML=[
+    {label:'MS mois vs Prévisionnel',curr:fe(ms),prev:`Prévis: ${fe(msPrev)}`,pct:msPrev>0?((ms-msPrev)/msPrev*100).toFixed(1):null,inv:true},
+    {label:'MS cumul YTD',curr:fe(msYTD),prev:cible>0?`Cible: ${fe(cible)}`:null,pct:cible>0?pct.toFixed(1):null,inv:false},
+    {label:'CA cumul YTD',curr:fe(caYTD),prev:ytdR&&ytdR.cible_ca>0?`Cible: ${fe(ytdR.cible_ca)}`:null,pct:ytdR&&ytdR.pct_realisation_ca?parseFloat(ytdR.pct_realisation_ca).toFixed(1):null,inv:false},
+    {label:'Ratio MS/CA YTD',curr:fp(ratioYTD),prev:'Cible ≤ 35%',badge:ratioYTD>35?'neg':'pos',badgeText:ratioYTD>35?'⚠️ Dépassé':'✅ OK'},
+  ].map(r=>`<div class="delta-row"><div class="delta-label">${r.label}</div><div class="delta-values"><div class="delta-curr">${r.curr}</div>${r.prev?`<div class="delta-prev">${r.prev}</div>`:''}${r.badge?`<div class="delta-pct ${r.badge}">${r.badgeText}</div>`:r.pct!=null?`<div class="delta-pct ${r.inv?(parseFloat(r.pct)>0?'neg':'pos'):(parseFloat(r.pct)>0?'pos':'neg')}">${parseFloat(r.pct)>0?'+':''}${r.pct}%</div>`:''}</div></div>`).join('');
+  const multi=filt(D.multi.length?D.multi:D.kpis);
+  document.getElementById('multi-tbody').innerHTML=multi.map((d,i)=>{const r=d.ratio_ms_ca!==undefined?parseFloat(d.ratio_ms_ca||0):(parseFloat(d.ca_real||0)>0?parseFloat(d.ms_real||0)/parseFloat(d.ca_real)*100:null);const ch=d.cout_horaire!==undefined?parseFloat(d.cout_horaire||0):(parseFloat(d.heures_real||0)>0?parseFloat(d.ms_real||0)/parseFloat(d.heures_real):0);return `<tr><td><span class="park-dot" style="background:${C[i%C.length]}"></span>${(d.parc||'').replace('NIKITO ','')}</td><td>${fe(d.masse_salariale||d.ms_real)}</td><td>${f(d.heures||d.heures_real,1)}h</td><td>${parseFloat(d.ca||d.ca_real||0)>0?fe(d.ca||d.ca_real):'—'}</td><td><span style="color:${r===null?'var(--muted)':r<=35?'var(--green)':'var(--red)'}">${r!==null?fp(r):'—'}</span></td><td>${ch>0?f(ch,2)+' €/h':'—'}</td></tr>`;}).join('');
+  const abs=filt(D.abs);
+  if(abs.length){const tot=abs.reduce((a,d)=>({maladie:a.maladie+parseFloat(d.jours_maladie||0),accident:a.accident+parseFloat(d.jours_accident||0),injustifie:a.injustifie+parseFloat(d.jours_injustifie||0),css:a.css+parseFloat(d.jours_conge_sans_solde||0),mat:a.mat+parseFloat(d.jours_maternite_paternite||0)}),{maladie:0,accident:0,injustifie:0,css:0,mat:0});const motifs=[{m:'Maladie',j:tot.maladie,c:'#f472b6'},{m:'Absence injustifiée',j:tot.injustifie,c:'#f87171'},{m:'Accident travail',j:tot.accident,c:'#facc15'},{m:'Congé sans solde',j:tot.css,c:'#22d3ee'},{m:'Maternité / Paternité',j:tot.mat,c:'#a855f7'}].filter(a=>a.j>0);const mx=Math.max(...motifs.map(a=>a.j),1);const taux=abs.reduce((s,d)=>s+parseFloat(d.taux_absenteisme_calc||0),0)/abs.length;document.getElementById('abs-list').innerHTML=(motifs.length?motifs.map(a=>`<div class="abs-row"><div class="abs-motif">${a.m}</div><div style="flex:2"><div class="abs-bar-track"><div class="abs-bar-fill" style="width:${(a.j/mx*100).toFixed(0)}%;background:${a.c}"></div></div></div><div class="abs-val">${f(a.j,1)}j</div></div>`).join(''):'<div class="empty-state"><div class="empty-icon">✅</div>Aucune absence ce mois</div>')+(taux>0?`<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)">Taux moyen : <strong style="color:${taux>5?'var(--red)':taux>3?'var(--yellow)':'var(--green)'}">${f(taux,2)}%</strong></div>`:'');}
+  const enc=filt(D.enc);
+  if(enc.length){document.getElementById('enc-bars').innerHTML=enc.map((e,i)=>`<div><div class="enc-labels"><span>${(e.parc||'').replace('NIKITO ','')}</span><span style="color:${parseFloat(e.taux_encadrement||0)>=10?'var(--green)':'var(--yellow)'}"> ${fp(e.taux_encadrement)} <span style="color:var(--muted);font-size:10px">(cible 10%)</span></span></div><div class="enc-bar-track"><div class="enc-bar-fill" style="width:${Math.min(parseFloat(e.taux_encadrement||0)/20*100,100).toFixed(0)}%;background:${C[i%C.length]}"></div></div>${e.effectif_total?`<div style="font-size:10px;color:var(--muted);margin-top:3px">${e.nb_cadres||0} cadres / ${e.effectif_total} eff. · ETP: ${f(e.etp,1)}</div>`:''}</div>`).join('');}
+  const comp=filt(D.comp);
+  if(comp.length&&park!=='all'){const d=comp[0];const vsItems=[{icon:'💰',label:'Masse sal. mois',val:fe(d.ms_real),avg:fe(d.ms_moyenne_societe),ok:parseFloat(d.ms_real||0)<=parseFloat(d.ms_moyenne_societe||0)*1.1},{icon:'📈',label:'CA mois',val:fe(d.ca_real),avg:fe(d.ca_moyenne_societe),ok:true},{icon:'📊',label:'Ratio MS/CA',val:fp(d.ratio_ms_ca_parc),avg:fp(d.ratio_ms_ca_moy_societe),ok:parseFloat(d.ratio_ms_ca_parc||0)<=35},{icon:'⚡',label:'Coût horaire',val:f(d.cout_horaire_parc,2)+'€',avg:f(d.cout_horaire_moy_societe,2)+'€',ok:parseFloat(d.cout_horaire_parc||0)<=parseFloat(d.cout_horaire_moy_societe||0)*1.1},{icon:'🎯',label:'Écart ratio',val:(parseFloat(d.ecart_ratio_vs_moyenne||0)>0?'+':'')+fp(d.ecart_ratio_vs_moyenne),avg:'0%',ok:parseFloat(d.ecart_ratio_vs_moyenne||0)<=0}];document.getElementById('vs-grid').innerHTML=vsItems.map(v=>`<div class="vs-item"><div style="font-size:16px;margin-bottom:4px">${v.icon}</div><div class="vs-label">${v.label}</div><div style="display:flex;justify-content:center;gap:14px;align-items:flex-end"><div><div class="vs-val ${v.ok?'vs-ok':'vs-warn'}">${v.val}</div><div style="font-size:10px;color:var(--muted)">Ce parc</div></div><div><div style="font-size:13px;color:var(--muted)">${v.avg}</div><div style="font-size:10px;color:var(--muted)">Moy. soc.</div></div></div></div>`).join('');}
+  else if(park==='all'){document.getElementById('vs-grid').innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📊</div>Sélectionnez un parc spécifique pour la vue comparative</div>';}
+  mkChart('chart-heures','bar',{labels:kpis.map(d=>d.parc.replace('NIKITO ','').substring(0,12)),datasets:[{label:'Heures travaillées',data:kpis.map(d=>parseFloat(d.heures_real||0)),backgroundColor:kpis.map((_,i)=>C[i%C.length]+'cc'),borderRadius:8}]});
+  mkChart('chart-hourstype','bar',{labels:kpis.map(d=>d.parc.replace('NIKITO ','').substring(0,12)),datasets:[{label:'Heures supp.',data:kpis.map(d=>parseFloat(d.heures_sup||0)),backgroundColor:'#facc15cc',borderRadius:6},{label:'Heures compl.',data:kpis.map(d=>parseFloat(d.heures_comp||0)),backgroundColor:'#22d3eecc',borderRadius:6}]});
 }
-
-function renderChart(id, type, data, extraOptions={}) {
-  const ctx = document.getElementById(id);
-  if (!ctx) return;
-  if (charts[id]) { charts[id].destroy(); }
-  charts[id] = new Chart(ctx, {
-    type,
-    data,
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: { labels: { color:'#9999bb', font:{size:11}, boxWidth:12 } },
-        ...extraOptions.plugins
-      },
-      scales: {
-        x: { grid:{color:'rgba(138,43,226,0.08)'}, ticks:{color:'#6b6b8a',font:{size:10}}, ...extraOptions.scales?.x },
-        y: { grid:{color:'rgba(138,43,226,0.08)'}, ticks:{color:'#6b6b8a',font:{size:10}}, ...extraOptions.scales?.y },
-      },
-      ...extraOptions
-    }
-  });
-}
-
-function getDemoData() {
-  return [
-    { name:'NIKITO Franconville', salary_mass:845.26, salary_mass_predicted:900, worked_hours:39.5, over_hours:2.5, complementary_hours:3, revenue:500, revenue_predicted:600 },
-    { name:'NIKITO Domus', salary_mass:4836.81, salary_mass_predicted:5000, worked_hours:217, over_hours:12, complementary_hours:18, revenue:12500, revenue_predicted:13000 },
-    { name:'NIKITO STE Geneviève', salary_mass:2035.42, salary_mass_predicted:2100, worked_hours:93, over_hours:5, complementary_hours:8, revenue:6200, revenue_predicted:6500 },
-    { name:'NIKITO Alfortville', salary_mass:1075.03, salary_mass_predicted:1200, worked_hours:49.5, over_hours:3, complementary_hours:5, revenue:500, revenue_predicted:800 },
-  ];
-}
-
-// Start
-loadData();
+function mkChart(id,type,data,extra={}){if(CH[id])CH[id].destroy();const ctx=document.getElementById(id);if(!ctx)return;CH[id]=new Chart(ctx,{type,data,options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{labels:{color:'#9999bb',font:{size:11},boxWidth:12}}},scales:{x:{grid:{color:'rgba(138,43,226,0.08)'},ticks:{color:'#6b6b8a',font:{size:10}},...(extra.scales?.x||{})},y:{grid:{color:'rgba(138,43,226,0.08)'},ticks:{color:'#6b6b8a',font:{size:10}},...(extra.scales?.y||{})}}, ...extra}});}
+loadAll();
 </script>
 </body>
 </html>
